@@ -80,10 +80,6 @@ func main() {
 		return indexHandler(c, db)
 	})
 
-	app.Get("/Amy", func(c *fiber.Ctx) error {
-		return AmyHandler(c, db)
-	})
-
 	app.Post("/", func(c *fiber.Ctx) error {
 		return postHandler(c, db)
 	})
