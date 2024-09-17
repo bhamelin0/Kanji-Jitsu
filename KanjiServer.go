@@ -1,21 +1,26 @@
 package main
 
 import (
-	"encoding/json"
 	"database/sql"
+	"encoding/json"
 	"fmt"
 	"log"
 	"os"
-	_ "github.com/lib/pq"
+
 	"github.com/gofiber/fiber/v2"
+	_ "github.com/lib/pq"
 )
 
 type PostgreServerConn struct {
-	Host string `json:"host"`
-	Port int `json:"port"`
-	User string `json:"user"`
+	Host     string `json:"host"`
+	Port     int    `json:"port"`
+	User     string `json:"user"`
 	Password string `json:"password"`
-	Dbname string `json:"dbname"`
+	Dbname   string `json:"dbname"`
+}
+
+type KanjVocabBody struct {
+	Kanji string `json:"kanji"`
 }
 
 func initEnv() PostgreServerConn {
@@ -23,30 +28,31 @@ func initEnv() PostgreServerConn {
 	if err != nil {
 		log.Fatal(err)
 	}
-	
+
 	var envData PostgreServerConn
 	err = json.Unmarshal(data, &envData)
-    if err != nil {
-        fmt.Printf("There was an error decoding the json. err = %s", err)
-    }
+	if err != nil {
+		fmt.Printf("There was an error decoding the json. err = %s", err)
+	}
 
 	return envData
 }
 
 func indexHandler(c *fiber.Ctx, db *sql.DB) error {
-	var selectString = "SELECT * FROM kanji WHERE id = 1"
+	var selectString = "SELECT * FROM kanji WHERE id = 3778"
 
 	rows, err := db.Query(selectString)
-	defer rows.Close()
 	if err != nil {
 		log.Fatalln(err)
 		c.JSON("An error occured")
 	}
 
+	defer rows.Close()
+
 	rows.Next()
 	var (
-		id   int
-		kanji string
+		id     int
+		kanji  string
 		nlevel int
 	)
 
@@ -54,19 +60,36 @@ func indexHandler(c *fiber.Ctx, db *sql.DB) error {
 		log.Fatal(err)
 	}
 
-	return c.SendString("Hello, your kanji is " + kanji );
+	return c.SendString("Hello, your kanji is " + kanji)
 }
- 
- func postHandler(c *fiber.Ctx, db *sql.DB) error {
+
+func postHandler(c *fiber.Ctx, db *sql.DB) error {
 	return c.SendString("Hello")
+}
+
+func populateKanjiHandler(c *fiber.Ctx, db *sql.DB) error {
+	populateKanjiTable(db)
+	return c.SendString("Populated")
+}
+
+func populateKanjiVocabHandler(c *fiber.Ctx, db *sql.DB) error {
+	jsonData := new(KanjVocabBody)
+	if err := c.BodyParser(&jsonData); err != nil {
+		return err
+	}
+
+	targetKanji := jsonData.Kanji
+	fmt.Println("target kanji is" + targetKanji)
+	UpdateKanjiVocab(db, targetKanji)
+	return c.SendString("Target kanji vocab updated")
 }
 
 func main() {
 	var env = initEnv()
-	
+
 	psqlInfo := fmt.Sprintf("host=%s port=%d user=%s "+
-    "password=%s dbname=%s sslmode=disable",
-    env.Host, env.Port, env.User, env.Password, env.Dbname)
+		"password=%s dbname=%s sslmode=disable",
+		env.Host, env.Port, env.User, env.Password, env.Dbname)
 
 	// Connect to database
 	db, err := sql.Open("postgres", psqlInfo)
@@ -83,7 +106,17 @@ func main() {
 	app.Post("/", func(c *fiber.Ctx) error {
 		return postHandler(c, db)
 	})
-	
+
+	app.Post("/populateKanji", func(c *fiber.Ctx) error {
+		return populateKanjiHandler(c, db)
+	})
+
+	// Expects json body with kanji: kanji
+	app.Post("/populateVocab", func(c *fiber.Ctx) error {
+		return populateKanjiVocabHandler(c, db)
+
+	})
+
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = "3000"
