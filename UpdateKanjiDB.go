@@ -8,6 +8,7 @@ import (
 	"log"
 	"os"
 	"regexp"
+	"slices"
 	"strconv"
 	"strings"
 )
@@ -55,20 +56,24 @@ const VocabInsertSQL = `
 	) select vocab_id from relationTable
 `
 
-const GlossInsertSQL = `
+const SafeGlossInsertSQL = `
 	insert into gloss (vocab_id, gloss)
-	values
+	select $1, $2
+	where not exists ( select 1 from gloss where vocab_id = $1 and gloss = $3)
 `
 
-const ReadingInsertSQL = `
-	insert into reading (vocab_id, gloss)
-	values
+const SafeReadingInsertSQL = `
+	insert into reading (vocab_id, reading)
+	select $1, $2
+	where not exists ( select 1 from reading where vocab_id = $1 and reading = $3)
 `
+
 const ReadingInsertSQLLine = `
 	($1, $2)
 `
 
 type Vocab struct {
+	Vocab_id int
 	Vocab    string
 	Common   bool
 	Readings []string
@@ -77,8 +82,6 @@ type Vocab struct {
 
 func UpdateKanjiVocab(db *sql.DB, kanji string) {
 	vocabList := findVocabForKanji(kanji)
-	fmt.Println(vocabList)
-	fmt.Println(kanji + " is our target")
 	for _, vocab := range vocabList {
 		uploadVocabToDb(db, kanji, vocab)
 	}
@@ -122,7 +125,7 @@ func entryContainsKanji(kanji string) {
 
 }
 
-// Return obj containing vocab, readings, and gloss entries Expects scanner to be on current vocab text
+// Return obj containing vocab, readings, and gloss entries. Expects scanner to be on current vocab text
 func getEntryData(scanner *bufio.Scanner) (Vocab, error) {
 	newVocabtext := parseTagText(scanner.Text())
 
@@ -161,58 +164,43 @@ func findAllKanji(vocab string) []string {
 	return matches
 }
 
+// Uploads a single vocab to the DB, assigning it to the kanji and saving all readings and glosses.
 func uploadVocabToDb(db *sql.DB, kanji string, vocab Vocab) {
+
+	// Vocab and relation to Kanji
 	rows, err := db.Query(VocabInsertSQL, vocab.Vocab, vocab.Common, kanji)
 	if err != nil {
 		fmt.Println(err)
 	}
-
 	rows.Next()
-
 	var vocab_id int
 	if err := rows.Scan(&vocab_id); err != nil {
 		fmt.Println(err)
 	}
 	rows.Close()
 
-	//GLOSSES
-	var glossSB strings.Builder
-	glossSB.WriteString(GlossInsertSQL)
-	for glossIndex := range vocab.Gloss {
-		glossSB.WriteString("($1, $" + strconv.Itoa(glossIndex+1) + ")")
+	// Glosses
+	for _, glossEntry := range vocab.Gloss {
+		_, err = db.Exec(SafeGlossInsertSQL, vocab_id, glossEntry, glossEntry)
+		if err != nil {
+			fmt.Println(err)
+			fmt.Println(strconv.Itoa(vocab_id))
+			fmt.Println(glossEntry)
+		}
 	}
 
-	glossInterface := make([]interface{}, len(vocab.Gloss)+1)
-	glossInterface[0] = vocab_id
-	for i := range len(vocab.Gloss) {
-		glossInterface[i+1] = vocab.Gloss[i]
-	}
-
-	_, err = db.Exec(glossSB.String(), glossInterface...)
-	if err != nil {
-		fmt.Println(err)
-	}
-
-	//READINGS
-	var readSB strings.Builder
-	readSB.WriteString(ReadingInsertSQL)
-	for readIndex := range vocab.Readings {
-		readSB.WriteString("($1, $" + strconv.Itoa(readIndex+1) + ")")
-	}
-
-	readInterface := make([]interface{}, len(vocab.Readings)+1)
-	readInterface[0] = vocab_id
-	for i := range len(vocab.Readings) {
-		readInterface[i+1] = vocab.Readings[i]
-	}
-
-	_, err = db.Exec(readSB.String(), readInterface...)
-	if err != nil {
-		fmt.Println(err)
+	// Readings
+	for _, readEntry := range vocab.Readings {
+		_, err = db.Exec(SafeReadingInsertSQL, vocab_id, readEntry, readEntry)
+		if err != nil {
+			fmt.Println(err)
+			fmt.Println(strconv.Itoa(vocab_id))
+			fmt.Println(readEntry)
+		}
 	}
 }
 
-// Insert all kanji into the kanji table
+// Insert every single kanji into the kanji table
 func populateKanjiTable(db *sql.DB) {
 	var sb strings.Builder
 	sb.WriteString("INSERT INTO kanji (kanji, nlevel) VALUES ")
@@ -227,11 +215,11 @@ func populateKanjiTable(db *sql.DB) {
 		scanner := bufio.NewScanner(file)
 		for scanner.Scan() {
 			newKanji := scanner.Text()
-			if !first {
-				sb.WriteString(", ('" + newKanji + "', " + strconv.Itoa(i) + ")")
-			} else {
+			if first {
 				first = false
 				sb.WriteString("('" + newKanji + "', " + strconv.Itoa(i) + ") ")
+			} else {
+				sb.WriteString(", ('" + newKanji + "', " + strconv.Itoa(i) + ")")
 			}
 		}
 	}
@@ -242,4 +230,102 @@ func populateKanjiTable(db *sql.DB) {
 	if err != nil {
 		fmt.Println(err)
 	}
+}
+
+const selectKanjiVocabSQL = `select kanji.id as kanji_id, vocab.vocab, vocab.id as vocab_id, vocab.common from kanji
+inner join kanji_vocab on kanji.id = kanji_vocab.kanji_id 
+inner join vocab on kanji_vocab.vocab_id = vocab.id 
+where kanji.kanji  = $1`
+
+const selectGlossSQL = `select vocab.id as vocab_id, gloss from kanji
+inner join kanji_vocab on kanji.id = kanji_vocab.kanji_id 
+inner join vocab on kanji_vocab.vocab_id = vocab.id 
+inner join gloss on vocab.id = gloss.vocab_id 
+where kanji.id = $1`
+
+const selectReadingSQL = `select vocab.id as vocab_id, reading from kanji
+inner join kanji_vocab on kanji.id = kanji_vocab.kanji_id 
+inner join vocab on kanji_vocab.vocab_id = vocab.id 
+inner join reading on vocab.id = reading.vocab_id 
+where kanji.id = $1`
+
+type KanjiOfDay struct {
+	Kanji           string
+	kanji_id        int
+	VocabCollection []Vocab
+}
+
+// Returns an object including all vocabs of a kanji for parsing to json and sending to UI
+func getKanjiOfDayObj(db *sql.DB, kanji string) KanjiOfDay {
+	// Get the core vocab data
+	rows, err := db.Query(selectKanjiVocabSQL, kanji)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	kanjiOfday := KanjiOfDay{Kanji: kanji}
+	var kanji_id int
+
+	for rows.Next() {
+		var (
+			vocab    string
+			vocab_id int
+			common   bool
+		)
+		if err := rows.Scan(&kanji_id, &vocab, &vocab_id, &common); err != nil {
+			log.Fatal(err)
+		}
+
+		newVocab := Vocab{Vocab: vocab, Vocab_id: vocab_id, Common: common, Gloss: []string{}, Readings: []string{}}
+		kanjiOfday.VocabCollection = append(kanjiOfday.VocabCollection, newVocab)
+	}
+	kanjiOfday.kanji_id = kanji_id
+	rows.Close()
+
+	// Get the glosses and append them into the matching vocab datas
+	glossRows, err := db.Query(selectGlossSQL, kanji_id)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	for rows.Next() {
+		var (
+			vocab_id int
+			gloss    string
+		)
+		if err := glossRows.Scan(&vocab_id, &gloss); err != nil {
+			log.Fatal(err)
+		}
+
+		matchingVocabEntryIndex := slices.IndexFunc(kanjiOfday.VocabCollection, func(n Vocab) bool {
+			return n.Vocab_id == vocab_id
+		})
+		kanjiOfday.VocabCollection[matchingVocabEntryIndex].Gloss = append(kanjiOfday.VocabCollection[matchingVocabEntryIndex].Gloss, gloss)
+	}
+	glossRows.Close()
+
+	// Get the glosses and append them into the matching vocab datas
+	readRows, err := db.Query(selectReadingSQL, kanji_id)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	for rows.Next() {
+		var (
+			vocab_id int
+			reading  string
+		)
+		if err := glossRows.Scan(&vocab_id, &reading); err != nil {
+			log.Fatal(err)
+		}
+
+		matchingVocabEntryIndex := slices.IndexFunc(kanjiOfday.VocabCollection, func(n Vocab) bool {
+			return n.Vocab_id == vocab_id
+		})
+		kanjiOfday.VocabCollection[matchingVocabEntryIndex].Readings = append(kanjiOfday.VocabCollection[matchingVocabEntryIndex].Gloss, reading)
+	}
+	readRows.Close()
+
+	// We should now have a fully built kanji of day we can send as JSON!
+	return kanjiOfday
 }
