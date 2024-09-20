@@ -84,6 +84,13 @@ func populateKanjiVocabHandler(c *fiber.Ctx, db *sql.DB) error {
 	return c.SendString("Target kanji vocab updated")
 }
 
+func getKanjiOfdayHandler(c *fiber.Ctx, db *sql.DB) error {
+	// TODO get the actual daily kanji 川
+
+	vocab := getKanjiOfDayObj(db, "川")
+	return c.JSON(vocab)
+}
+
 func main() {
 	var env = initEnv()
 
@@ -99,8 +106,12 @@ func main() {
 
 	app := fiber.New()
 
-	app.Get("/", func(c *fiber.Ctx) error {
+	app.Get("/test", func(c *fiber.Ctx) error {
 		return indexHandler(c, db)
+	})
+
+	app.Get("/kanjiDay", func(c *fiber.Ctx) error {
+		return getKanjiOfdayHandler(c, db)
 	})
 
 	app.Post("/", func(c *fiber.Ctx) error {

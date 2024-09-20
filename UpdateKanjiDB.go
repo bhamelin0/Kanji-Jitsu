@@ -288,7 +288,7 @@ func getKanjiOfDayObj(db *sql.DB, kanji string) KanjiOfDay {
 		fmt.Println(err)
 	}
 
-	for rows.Next() {
+	for glossRows.Next() {
 		var (
 			vocab_id int
 			gloss    string
@@ -304,25 +304,25 @@ func getKanjiOfDayObj(db *sql.DB, kanji string) KanjiOfDay {
 	}
 	glossRows.Close()
 
-	// Get the glosses and append them into the matching vocab datas
+	// Get the readings and append them into the matching vocab datas
 	readRows, err := db.Query(selectReadingSQL, kanji_id)
 	if err != nil {
 		fmt.Println(err)
 	}
 
-	for rows.Next() {
+	for readRows.Next() {
 		var (
 			vocab_id int
 			reading  string
 		)
-		if err := glossRows.Scan(&vocab_id, &reading); err != nil {
+		if err := readRows.Scan(&vocab_id, &reading); err != nil {
 			log.Fatal(err)
 		}
 
 		matchingVocabEntryIndex := slices.IndexFunc(kanjiOfday.VocabCollection, func(n Vocab) bool {
 			return n.Vocab_id == vocab_id
 		})
-		kanjiOfday.VocabCollection[matchingVocabEntryIndex].Readings = append(kanjiOfday.VocabCollection[matchingVocabEntryIndex].Gloss, reading)
+		kanjiOfday.VocabCollection[matchingVocabEntryIndex].Readings = append(kanjiOfday.VocabCollection[matchingVocabEntryIndex].Readings, reading)
 	}
 	readRows.Close()
 
