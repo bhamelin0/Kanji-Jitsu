@@ -68,7 +68,7 @@ func postHandler(c *fiber.Ctx, db *sql.DB) error {
 }
 
 func populateKanjiHandler(c *fiber.Ctx, db *sql.DB) error {
-	populateKanjiTable(db)
+	PopulateKanjiTable(db)
 	return c.SendString("Populated")
 }
 
@@ -80,14 +80,14 @@ func populateKanjiVocabHandler(c *fiber.Ctx, db *sql.DB) error {
 
 	targetKanji := jsonData.Kanji
 	fmt.Println("target kanji is" + targetKanji)
-	UpdateKanjiVocab(db, targetKanji)
+	InitVocabForKanji(db, targetKanji)
 	return c.SendString("Target kanji vocab updated")
 }
 
 func getKanjiOfdayHandler(c *fiber.Ctx, db *sql.DB) error {
 	// TODO get the actual daily kanji 川
 
-	vocab := getKanjiOfDayObj(db, "川")
+	vocab := GetKanjiOfDayObj(db, "川")
 	return c.JSON(vocab)
 }
 

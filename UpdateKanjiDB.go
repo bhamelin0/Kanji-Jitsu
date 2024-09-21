@@ -80,7 +80,7 @@ type Vocab struct {
 	Gloss    []string
 }
 
-func UpdateKanjiVocab(db *sql.DB, kanji string) {
+func InitVocabForKanji(db *sql.DB, kanji string) {
 	vocabList := findVocabForKanji(kanji)
 	for _, vocab := range vocabList {
 		uploadVocabToDb(db, kanji, vocab)
@@ -201,7 +201,7 @@ func uploadVocabToDb(db *sql.DB, kanji string, vocab Vocab) {
 }
 
 // Insert every single kanji into the kanji table
-func populateKanjiTable(db *sql.DB) {
+func PopulateKanjiTable(db *sql.DB) {
 	var sb strings.Builder
 	sb.WriteString("INSERT INTO kanji (kanji, nlevel) VALUES ")
 	first := true
@@ -256,7 +256,7 @@ type KanjiOfDay struct {
 }
 
 // Returns an object including all vocabs of a kanji for parsing to json and sending to UI
-func getKanjiOfDayObj(db *sql.DB, kanji string) KanjiOfDay {
+func GetKanjiOfDayObj(db *sql.DB, kanji string) KanjiOfDay {
 	// Get the core vocab data
 	rows, err := db.Query(selectKanjiVocabSQL, kanji)
 	if err != nil {
