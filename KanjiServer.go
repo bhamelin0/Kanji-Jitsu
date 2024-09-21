@@ -2,6 +2,7 @@ package main
 
 import (
 	"KanjiWordle/KanjiDBLib"
+	"KanjiWordle/PostgresConn"
 	"database/sql"
 	"encoding/json"
 	"fmt"
@@ -87,24 +88,12 @@ func populateKanjiVocabHandler(c *fiber.Ctx, db *sql.DB) error {
 }
 
 func getKanjiOfdayHandler(c *fiber.Ctx, db *sql.DB) error {
-	// TODO get the actual daily kanji 川
-
 	vocab := KanjiDBLib.GetKanjiOfDayObj(db, "力")
 	return c.JSON(vocab)
 }
 
 func main() {
-	var env = initEnv()
-
-	psqlInfo := fmt.Sprintf("host=%s port=%d user=%s "+
-		"password=%s dbname=%s sslmode=disable",
-		env.Host, env.Port, env.User, env.Password, env.Dbname)
-
-	// Connect to database
-	db, err := sql.Open("postgres", psqlInfo)
-	if err != nil {
-		log.Fatal(err)
-	}
+	db := PostgresConn.ConnectDB()
 
 	app := fiber.New()
 
@@ -127,7 +116,6 @@ func main() {
 	// Expects json body with kanji: kanji
 	app.Post("/populateVocab", func(c *fiber.Ctx) error {
 		return populateKanjiVocabHandler(c, db)
-
 	})
 
 	port := os.Getenv("PORT")

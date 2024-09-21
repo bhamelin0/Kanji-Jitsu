@@ -42,6 +42,11 @@ func GetKanjiOfDayObj(db *sql.DB, kanji string) KanjiOfDay {
 	return getKanjiOfDayHelper(db, kanji)
 }
 
+// Should determine new kanji for the day and update all data so it will be gotten
+func InitKanjiOfDay(db *sql.DB) {
+
+}
+
 // Takes a kanji string and uploads entire list of vocab gloss and readings to DB
 func InitVocabForKanji(db *sql.DB, kanji string) {
 	vocabList := findVocabForKanji(kanji)
