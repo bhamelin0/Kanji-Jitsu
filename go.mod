@@ -1,8 +1,11 @@
-module KanjiServer.go
+module KanjiWordle
 
 go 1.23.1
 
-require github.com/gofiber/fiber/v2 v2.52.5
+require (
+	github.com/gofiber/fiber/v2 v2.52.5
+	github.com/lib/pq v1.10.9
+)
 
 require (
 	dario.cat/mergo v1.0.0 // indirect
@@ -19,7 +22,6 @@ require (
 	github.com/gohugoio/hugo v0.123.3 // indirect
 	github.com/google/uuid v1.5.0 // indirect
 	github.com/klauspost/compress v1.17.0 // indirect
-	github.com/lib/pq v1.10.9 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-isatty v0.0.20 // indirect
 	github.com/mattn/go-runewidth v0.0.15 // indirect

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"KanjiWordle/KanjiDBLib"
 	"database/sql"
 	"encoding/json"
 	"fmt"
@@ -51,12 +52,13 @@ func indexHandler(c *fiber.Ctx, db *sql.DB) error {
 
 	rows.Next()
 	var (
-		id     int
-		kanji  string
-		nlevel int
+		id       int
+		kanji    string
+		nlevel   int
+		consumed bool
 	)
 
-	if err := rows.Scan(&id, &kanji, &nlevel); err != nil {
+	if err := rows.Scan(&id, &kanji, &nlevel, &consumed); err != nil {
 		log.Fatal(err)
 	}
 
@@ -68,7 +70,7 @@ func postHandler(c *fiber.Ctx, db *sql.DB) error {
 }
 
 func populateKanjiHandler(c *fiber.Ctx, db *sql.DB) error {
-	PopulateKanjiTable(db)
+	KanjiDBLib.PopulateKanjiTable(db)
 	return c.SendString("Populated")
 }
 
@@ -80,14 +82,14 @@ func populateKanjiVocabHandler(c *fiber.Ctx, db *sql.DB) error {
 
 	targetKanji := jsonData.Kanji
 	fmt.Println("target kanji is" + targetKanji)
-	InitVocabForKanji(db, targetKanji)
+	KanjiDBLib.InitVocabForKanji(db, targetKanji)
 	return c.SendString("Target kanji vocab updated")
 }
 
 func getKanjiOfdayHandler(c *fiber.Ctx, db *sql.DB) error {
 	// TODO get the actual daily kanji 川
 
-	vocab := GetKanjiOfDayObj(db, "川")
+	vocab := KanjiDBLib.GetKanjiOfDayObj(db, "力")
 	return c.JSON(vocab)
 }
 
@@ -114,7 +116,7 @@ func main() {
 		return getKanjiOfdayHandler(c, db)
 	})
 
-	app.Post("/", func(c *fiber.Ctx) error {
+	app.Get("/", func(c *fiber.Ctx) error {
 		return postHandler(c, db)
 	})
 
