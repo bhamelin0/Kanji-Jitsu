@@ -9,6 +9,6 @@ import (
 
 func Init() {
 	// Should run table to install all kanji from files
-	db := PostgresConn.ConnectDB()
-	KanjiDBLib.PopulateKanjiTable(db)
+	db, _ := PostgresConn.ConnectDB("envAWS.json")
+	KanjiDBLib.InitializeNewKanjiJitsuDB(db)
 }

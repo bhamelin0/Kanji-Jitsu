@@ -13,7 +13,7 @@ import (
 )
 
 // Collection of helper functionality for defining interactions with the kanji postgres db
-const KanjiFileNames = "JLPT Kanji/N"
+const KanjiFileNames = "KanjiDBLib/JLPT Kanji/N"
 const entryCloseTag = "</entry>"
 const vocabTag = "<keb>"
 const readingTag = "<reb>"
@@ -55,8 +55,11 @@ func InitVocabForKanji(db *sql.DB, kanji string) {
 	}
 }
 
-// Insert every single kanji into the kanji table. Should only be ran once to init the DB
-func PopulateKanjiTable(db *sql.DB) {
+func InitializeNewKanjiJitsuDB(db *sql.DB) {
+	_, err := db.Exec(initDBSQL)
+	if err != nil {
+		fmt.Println(err)
+	}
 	populateKanjiTableHelper(db)
 }
 

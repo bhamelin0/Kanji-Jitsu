@@ -66,12 +66,8 @@ func indexHandler(c *fiber.Ctx, db *sql.DB) error {
 	return c.SendString("Hello, your kanji is " + kanji)
 }
 
-func postHandler(c *fiber.Ctx, db *sql.DB) error {
-	return c.SendString("Hello")
-}
-
-func populateKanjiHandler(c *fiber.Ctx, db *sql.DB) error {
-	KanjiDBLib.PopulateKanjiTable(db)
+func initializeKanjiDB(c *fiber.Ctx, db *sql.DB) error {
+	KanjiDBLib.InitializeNewKanjiJitsuDB(db)
 	return c.SendString("Populated")
 }
 
@@ -92,9 +88,13 @@ func getKanjiOfdayHandler(c *fiber.Ctx, db *sql.DB) error {
 	return c.JSON(vocab)
 }
 
-func main() {
-	db := PostgresConn.ConnectDB()
+func initHandler(c *fiber.Ctx) error {
+	Init()
+	return c.SendString("Database Initialized")
+}
 
+func main() {
+	db, _ := PostgresConn.ConnectDB("envAWS.json")
 	app := fiber.New()
 
 	app.Get("/test", func(c *fiber.Ctx) error {
@@ -105,17 +105,18 @@ func main() {
 		return getKanjiOfdayHandler(c, db)
 	})
 
-	app.Get("/", func(c *fiber.Ctx) error {
-		return postHandler(c, db)
-	})
-
 	app.Post("/populateKanji", func(c *fiber.Ctx) error {
-		return populateKanjiHandler(c, db)
+		return initializeKanjiDB(c, db)
 	})
 
 	// Expects json body with kanji: kanji
 	app.Post("/populateVocab", func(c *fiber.Ctx) error {
 		return populateKanjiVocabHandler(c, db)
+	})
+
+	// Expects json body with kanji: kanji
+	app.Post("/init", func(c *fiber.Ctx) error {
+		return initHandler(c)
 	})
 
 	port := os.Getenv("PORT")

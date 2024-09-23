@@ -8,6 +8,6 @@ import (
 )
 
 func DailyTask() {
-	db := PostgresConn.ConnectDB()
+	db, _ := PostgresConn.ConnectDB("envAWS.json")
 	KanjiDBLib.InitKanjiOfDay(db)
 }

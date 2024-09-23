@@ -16,24 +16,24 @@ type PostgreServerConn struct {
 	Dbname   string `json:"dbname"`
 }
 
-func ConnectDB() *sql.DB {
-	var env = initEnv()
+func ConnectDB(envFile string) (db *sql.DB, err error) {
+	var env = initEnv(envFile)
 
 	psqlInfo := fmt.Sprintf("host=%s port=%d user=%s "+
-		"password=%s dbname=%s sslmode=disable",
+		"password=%s dbname=%s",
 		env.Host, env.Port, env.User, env.Password, env.Dbname)
 
 	// Connect to database
-	db, err := sql.Open("postgres", psqlInfo)
+	db, err = sql.Open("postgres", psqlInfo)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	return db
+	return db, err
 }
 
-func initEnv() PostgreServerConn {
-	data, err := os.ReadFile("env.json")
+func initEnv(envFile string) PostgreServerConn {
+	data, err := os.ReadFile(envFile)
 	if err != nil {
 		log.Fatal(err)
 	}

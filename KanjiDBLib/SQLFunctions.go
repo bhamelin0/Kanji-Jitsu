@@ -68,3 +68,81 @@ inner join kanji_vocab on kanji.id = kanji_vocab.kanji_id
 inner join vocab on kanji_vocab.vocab_id = vocab.id 
 inner join reading on vocab.id = reading.vocab_id 
 where kanji.id = $1`
+
+const initDBSQL = `
+-- public.kanji definition
+
+-- Drop table
+
+-- DROP TABLE public.kanji;
+
+CREATE TABLE public.kanji (
+	id int4 GENERATED ALWAYS AS IDENTITY( INCREMENT BY 1 MINVALUE 1 MAXVALUE 2147483647 START 1 CACHE 1 NO CYCLE) NOT NULL,
+	kanji varchar NOT NULL,
+	nlevel int4 NOT NULL,
+	consumed bool DEFAULT false NOT NULL,
+	CONSTRAINT kanji_pk PRIMARY KEY (id),
+	CONSTRAINT kanji_unique UNIQUE (kanji)
+);
+
+
+-- public.vocab definition
+
+-- Drop table
+
+-- DROP TABLE public.vocab;
+
+CREATE TABLE public.vocab (
+	id int4 GENERATED ALWAYS AS IDENTITY( INCREMENT BY 1 MINVALUE 1 MAXVALUE 2147483647 START 1 CACHE 1 NO CYCLE) NOT NULL,
+	vocab varchar NOT NULL,
+	common bool DEFAULT false NOT NULL,
+	CONSTRAINT vocab_pk PRIMARY KEY (id),
+	CONSTRAINT vocab_unique UNIQUE (vocab)
+);
+
+
+-- public.gloss definition
+
+-- Drop table
+
+-- DROP TABLE public.gloss;
+
+CREATE TABLE public.gloss (
+	id int4 GENERATED ALWAYS AS IDENTITY( INCREMENT BY 1 MINVALUE 1 MAXVALUE 2147483647 START 1 CACHE 1 NO CYCLE) NOT NULL,
+	vocab_id int4 NOT NULL,
+	gloss varchar NOT NULL,
+	CONSTRAINT gloss_pk PRIMARY KEY (id),
+	CONSTRAINT gloss_vocab_fk FOREIGN KEY (vocab_id) REFERENCES public.vocab(id)
+);
+
+
+-- public.kanji_vocab definition
+
+-- Drop table
+
+-- DROP TABLE public.kanji_vocab;
+
+CREATE TABLE public.kanji_vocab (
+	kanji_id int4 NOT NULL,
+	vocab_id int4 NOT NULL,
+	id int4 GENERATED ALWAYS AS IDENTITY( INCREMENT BY 1 MINVALUE 1 MAXVALUE 2147483647 START 1 CACHE 1 NO CYCLE) NOT NULL,
+	CONSTRAINT kanji_vocab_pk PRIMARY KEY (id),
+	CONSTRAINT kanji_vocab_kanji_fk FOREIGN KEY (kanji_id) REFERENCES public.kanji(id),
+	CONSTRAINT kanji_vocab_vocab_fk FOREIGN KEY (vocab_id) REFERENCES public.vocab(id)
+);
+
+
+-- public.reading definition
+
+-- Drop table
+
+-- DROP TABLE public.reading;
+
+CREATE TABLE public.reading (
+	id int4 GENERATED ALWAYS AS IDENTITY( INCREMENT BY 1 MINVALUE 1 MAXVALUE 2147483647 START 1 CACHE 1 NO CYCLE) NOT NULL,
+	reading varchar NOT NULL,
+	vocab_id int4 NOT NULL,
+	CONSTRAINT reading_pk PRIMARY KEY (id),
+	CONSTRAINT reading_vocab_fk FOREIGN KEY (vocab_id) REFERENCES public.vocab(id)
+);
+`
