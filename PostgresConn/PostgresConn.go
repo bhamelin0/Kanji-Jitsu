@@ -6,6 +6,9 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strconv"
+
+	_ "github.com/lib/pq"
 )
 
 type PostgreServerConn struct {
@@ -16,17 +19,22 @@ type PostgreServerConn struct {
 	Dbname   string `json:"dbname"`
 }
 
-func ConnectDB(envFile string) (db *sql.DB, err error) {
+func ConnectDBFromFile(envFile string) (db *sql.DB, err error) {
 	var env = initEnv(envFile)
+	log.Println(("Connected to " + env.Host))
+	return ConnectDB(env.Host, strconv.Itoa(env.Port), env.User, env.Password, env.Dbname)
+}
 
-	psqlInfo := fmt.Sprintf("host=%s port=%d user=%s "+
-		"password=%s dbname=%s",
-		env.Host, env.Port, env.User, env.Password, env.Dbname)
+func ConnectDB(host string, port string, user string, password string, dbname string) (db *sql.DB, err error) {
+
+	psqlInfo := fmt.Sprintf("host=%s port=%s user=%s "+
+		"password=%s dbname=%s sslmode=disable",
+		host, port, user, password, dbname)
 
 	// Connect to database
 	db, err = sql.Open("postgres", psqlInfo)
 	if err != nil {
-		log.Fatal(err)
+		log.Printf("Error during postgres conn: %v", err)
 	}
 
 	return db, err

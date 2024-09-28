@@ -23,8 +23,14 @@ const fileName = "JMDict_e"
 
 type KanjiOfDay struct {
 	Kanji           string
-	kanji_id        int
+	Kanji_id        int
 	VocabCollection []Vocab
+}
+
+type DailyKanji struct {
+	Kanji    string
+	Kanji_id int
+	N_level  int
 }
 
 type Vocab struct {
@@ -42,6 +48,26 @@ func GetKanjiOfDayObj(db *sql.DB, kanji string) KanjiOfDay {
 	return getKanjiOfDayHelper(db, kanji)
 }
 
+func GetKanjiDailyListObj(db *sql.DB) []DailyKanji {
+	var dailyKanjiList = []DailyKanji{}
+	rows, err := db.Query(DailyKanji_Select)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	for rows.Next() {
+		var kanji DailyKanji
+		var dump int
+		if err := rows.Scan(&kanji.Kanji_id, &kanji.Kanji, &kanji.N_level, &dump); err != nil {
+			log.Fatal(err)
+		}
+
+		dailyKanjiList = append(dailyKanjiList, kanji)
+	}
+
+	return dailyKanjiList
+}
+
 // Should determine new kanji for the day and update all data so it will be gotten
 func InitKanjiOfDay(db *sql.DB) {
 
@@ -55,15 +81,127 @@ func InitVocabForKanji(db *sql.DB, kanji string) {
 	}
 }
 
+// Iterates through all kanji and connects associated vocab
+// TODO: Improve speed by iterating through all vocab one by one and finding associated Kanji in SQL instead
+func InitVocabForAllKanji(db *sql.DB) {
+	AllKanji := getAllKanji()
+	fmt.Println("Total kanji" + strconv.Itoa((len(AllKanji))))
+	for index, kanji := range AllKanji {
+		fmt.Println("Running for Kanji #" + strconv.Itoa((index)))
+		vocabList := findVocabForKanji(kanji)
+		for _, vocab := range vocabList {
+			uploadVocabToDb(db, kanji, vocab)
+		}
+	}
+}
+
 func InitializeNewKanjiJitsuDB(db *sql.DB) {
+	fmt.Println("Initializing DB")
 	_, err := db.Exec(initDBSQL)
 	if err != nil {
 		fmt.Println(err)
 	}
-	populateKanjiTableHelper(db)
+	fmt.Println("DB initialized")
+}
+
+func PopulateKanjiTable(db *sql.DB) {
+	var sb strings.Builder
+	sb.WriteString(InsertKanjiTableSQL)
+	first := true
+
+	for i := 1; i <= 5; i++ {
+		file, err := os.Open(KanjiFileNames + strconv.Itoa(i))
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		scanner := bufio.NewScanner(file)
+		for scanner.Scan() {
+			newKanji := scanner.Text()
+			if first {
+				first = false
+				sb.WriteString("('" + newKanji + "', " + strconv.Itoa(i) + ") ")
+			} else {
+				sb.WriteString(", ('" + newKanji + "', " + strconv.Itoa(i) + ")")
+			}
+		}
+	}
+	sb.WriteString(";")
+	fmt.Println(sb.String())
+
+	_, err := db.Exec(sb.String())
+	if err != nil {
+		fmt.Println(err)
+	}
+}
+
+// Updates Kanji Of Day
+func UpdateDailyKanji(db *sql.DB) (kanji []int) {
+	kanjiIDs := getFiveKanjiHelper(db)
+
+	if len(kanjiIDs) != 5 {
+		_, err := db.Exec(DailyKanji_Reset)
+		if err != nil {
+			fmt.Println(err)
+		}
+		kanjiIDs = getFiveKanjiHelper(db)
+	}
+	if len(kanjiIDs) != 5 {
+		log.Fatal("Cannot retrieve 5 kanji; Failing")
+	}
+
+	_, err := db.Exec(DailyKanji_Expire)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	_, err = db.Exec(DailyKanji_SetDaily, kanjiIDs[0], kanjiIDs[1], kanjiIDs[2], kanjiIDs[3], kanjiIDs[4])
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	return kanjiIDs
 }
 
 // Private functions
+
+func getAllKanji() (kanji []string) {
+	var kanjiList = []string{}
+
+	for i := 1; i <= 5; i++ {
+		file, err := os.Open(KanjiFileNames + strconv.Itoa(i))
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		scanner := bufio.NewScanner(file)
+		for scanner.Scan() {
+			kanjiList = append(kanjiList, scanner.Text())
+		}
+	}
+	return kanjiList
+}
+
+func getFiveKanjiHelper(db *sql.DB) []int {
+	rows, err := db.Query(DailyKanji_GetFiveNew)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	kanjiIds := []int{}
+
+	for rows.Next() {
+		var (
+			id int
+		)
+		if err := rows.Scan(&id); err != nil {
+			log.Fatal(err)
+		}
+
+		kanjiIds = append(kanjiIds, id)
+	}
+	return kanjiIds
+}
 
 // Return obj containing vocab, readings, and gloss entries. Expects scanner to be on current vocab text
 func getEntryData(scanner *bufio.Scanner) (Vocab, error) {
@@ -118,7 +256,7 @@ func getKanjiOfDayHelper(db *sql.DB, kanji string) KanjiOfDay {
 		newVocab := Vocab{Vocab: vocab, Vocab_id: vocab_id, Common: common, Gloss: []string{}, Readings: []string{}}
 		kanjiOfday.VocabCollection = append(kanjiOfday.VocabCollection, newVocab)
 	}
-	kanjiOfday.kanji_id = kanji_id
+	kanjiOfday.Kanji_id = kanji_id
 	rows.Close()
 
 	// Get the glosses and append them into the matching vocab datas
@@ -204,41 +342,11 @@ func parseTagText(text string) string {
 	return noEndTag
 }
 
-func populateKanjiTableHelper(db *sql.DB) {
-	var sb strings.Builder
-	sb.WriteString(InsertKanjiTableSQL)
-	first := true
-
-	for i := 1; i <= 5; i++ {
-		file, err := os.Open(KanjiFileNames + strconv.Itoa(i))
-		if err != nil {
-			log.Fatal(err)
-		}
-
-		scanner := bufio.NewScanner(file)
-		for scanner.Scan() {
-			newKanji := scanner.Text()
-			if first {
-				first = false
-				sb.WriteString("('" + newKanji + "', " + strconv.Itoa(i) + ") ")
-			} else {
-				sb.WriteString(", ('" + newKanji + "', " + strconv.Itoa(i) + ")")
-			}
-		}
-	}
-	sb.WriteString(";")
-	fmt.Println(sb.String())
-
-	_, err := db.Exec(sb.String())
-	if err != nil {
-		fmt.Println(err)
-	}
-}
-
 // Uploads a single vocab to the DB, assigning it to the kanji and saving all readings and glosses.
 func uploadVocabToDb(db *sql.DB, kanji string, vocab Vocab) {
 
 	// Vocab and relation to Kanji
+	//fmt.Println(("Uploading ") + kanji)
 	rows, err := db.Query(VocabInsertSQL, vocab.Vocab, vocab.Common, kanji)
 	if err != nil {
 		fmt.Println(err)

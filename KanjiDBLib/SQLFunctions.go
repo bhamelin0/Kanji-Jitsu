@@ -146,3 +146,43 @@ CREATE TABLE public.reading (
 	CONSTRAINT reading_vocab_fk FOREIGN KEY (vocab_id) REFERENCES public.vocab(id)
 );
 `
+const DailyKanji_GetFiveNew = `
+select * from (
+	select id from kanji
+	where daily_status is null and nlevel = 1
+	order by random()
+	limit 1
+)
+union 
+select * from (
+	select id from kanji
+	where daily_status is null and nlevel = 2
+	order by random()
+	limit 1
+)
+union 
+select * from (
+	select id from kanji
+	where daily_status is null and nlevel = 3
+	order by random()
+	limit 1
+)
+union 
+select id from (
+	select * from kanji
+	where daily_status is null and nlevel = 4
+	order by random()
+	limit 1
+)
+union 
+select id from (
+	select * from kanji
+	where daily_status is null and nlevel = 5
+	order by random()
+	limit 1
+)`
+
+const DailyKanji_Expire = `update kanji set daily_status = 2 where daily_status = 1`
+const DailyKanji_SetDaily = `update kanji set daily_status = 1 where kanji.id in($1, $2, $3, $4, $5)`
+const DailyKanji_Select = `select * from kanji where daily_status = 1 order by nlevel `
+const DailyKanji_Reset = `update kanji set daily_status = null where daily_status = 2`
