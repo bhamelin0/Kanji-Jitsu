@@ -10,6 +10,7 @@ import (
 	"os"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/cors"
 )
 
 type PostgreServerConn struct {
@@ -96,7 +97,13 @@ func getDailyKanjiHandler(c *fiber.Ctx, db *sql.DB) error {
 }
 
 func getVocabForKanjiHandler(c *fiber.Ctx, db *sql.DB) error {
-	vocab := KanjiDBLib.GetKanjiOfDayObj(db, "力")
+	jsonData := new(KanjVocabBody)
+	if err := c.BodyParser(&jsonData); err != nil {
+		return err
+	}
+	targetKanji := jsonData.Kanji
+
+	vocab := KanjiDBLib.GetKanjiOfDayObj(db, targetKanji)
 	return c.JSON(vocab)
 }
 
@@ -113,6 +120,7 @@ func initHandler(c *fiber.Ctx) error {
 func main() {
 	db, _ := PostgresConn.ConnectDBFromFile("env.json")
 	app := fiber.New()
+	app.Use(cors.New())
 
 	log.Println(("DB connected, waiting for requests"))
 

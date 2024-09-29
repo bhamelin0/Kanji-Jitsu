@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useRouteError } from "react-router-dom";
+import { Link, Outlet, useRouteError } from "react-router-dom";
 
 function ErrorPage() {
   const error = useRouteError();
@@ -12,6 +12,7 @@ function ErrorPage() {
       <p>
         <i>{error.statusText || error.message}</i>
       </p>
+      <Link to={"/"}>Return to Kanjigame</Link>
     </div>
   );
 }

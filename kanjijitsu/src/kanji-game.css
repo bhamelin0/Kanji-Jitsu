@@ -1,5 +1,28 @@
 .App {
+  background-image: url("\\Images\\Shiny Overlay.svg");
+  background-size: cover;
+}
+
+@font-face {
+  font-family: "Kanji-Fancy";
+  src: url(Font/BIZUDMincho-Bold.ttf) format("truetype");
+}
+
+.App-Body {
   text-align: center;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-left: 10rem;
+  margin-right: 10rem;
+}
+
+.App-Toolbar {
+  position: absolute;
+  display: flex;
+  justify-content: right;
+  width: 100%;
 }
 
 .App-logo {
@@ -13,15 +36,13 @@
   }
 }
 
+.Kanji-Selector-Subtitle{
+  font-size: calc(30px);
+  color: white;
+}
+
 .App-header {
-  background-image: url("\\Images\\Shiny Overlay.svg");
-  background-size: cover;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
+  font-size: calc(20px + 2vmin);
   color: white;
 }
 
@@ -29,11 +50,133 @@
   color: #61dafb;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.Kanji-Selector {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  flex-direction: row-reverse;
+}
+
+.Kanji-Game-Stage-1 {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  width:100%;
+}
+
+.Kanji-Box {
+  border-width: 3px;
+  border-style: solid;
+  border-color: black;
+  border-radius: 6px;
+  margin: 10px;
+
+  font-family: "Kanji-Fancy", Verdana, Tahoma;
+  font-size: 5rem;
+  
+}
+
+.Kanji-Box-N1 {
+  background-color: rgb(255, 186, 186);
+}
+.Kanji-Box-N2 {
+  background-color: rgb(255, 211, 186);
+}
+.Kanji-Box-N3 {
+  background-color: rgb(255, 254, 186);
+}
+.Kanji-Box-N4 {
+  background-color: rgb(211, 255, 186);
+}
+.Kanji-Box-N5 {
+  background-color: rgb(186, 255, 203);
+}
+
+.Vocab-Input {
+  --border-width: 3;
+  width: 100%;
+  max-width: 20rem;
+  padding: 12px 20px;
+  font-size: 1rem;
+  border-width: calc(var(--border-width)* 1px);
+  border-style: solid;
+  border-color: black;
+  border-radius: 6px;
+  text-align: center;
+  outline: transparent;
+  transition: border-color calc(var(--transition, 0.2)* 1s) ease;
+}
+
+.Vocab-List {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  max-width: 80%;
+  overflow-x: auto;
+}
+
+.switch-container {
+  margin: 10px;
+  width: 70px;
+}
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 70px;
+  height: 34px;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: .4s;
+  transition: .4s;
+  border-radius: 34px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.slider-text {
+  display: flex;
+  align-items: center; /* Vertical center alignment */
+  margin: 10px;
+  font-weight: bold;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: .4s;
+  border-radius: 34px;
+}
+
+input:checked + .slider {
+  background-color: #2196F3;
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 2px #2196F3;
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(36px);
+  -ms-transform: translateX(36px);
+  transform: translateX(36px);
+}
+
+input:checked + .slider {
+  justify-content: flex-start;
 }
