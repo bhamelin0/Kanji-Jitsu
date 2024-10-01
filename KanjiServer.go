@@ -97,13 +97,9 @@ func getDailyKanjiHandler(c *fiber.Ctx, db *sql.DB) error {
 }
 
 func getVocabForKanjiHandler(c *fiber.Ctx, db *sql.DB) error {
-	jsonData := new(KanjVocabBody)
-	if err := c.BodyParser(&jsonData); err != nil {
-		return err
-	}
-	targetKanji := jsonData.Kanji
-
-	vocab := KanjiDBLib.GetKanjiOfDayObj(db, targetKanji)
+	m := c.Queries()
+	kanji := m["kanji"]
+	vocab := KanjiDBLib.GetKanjiOfDayObj(db, kanji)
 	return c.JSON(vocab)
 }
 
