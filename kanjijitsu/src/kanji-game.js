@@ -11,8 +11,9 @@ function KanjiGame() {
     const [selectedKanji, setSelectedKanji] = useState(null); // 1 displays selected Kanji, 2 is end screen
     const [selectedKanjiVocabCommon, setSelectedKanjiVocabCommon] = useState(null); // List of common valid Kanji inputs
     const [selectedKanjiVocabRare, setSelectedKanjiVocabRare] = useState(null); // List of rare valid Vocab inputs
-    const [attempts, setAttempts] = useState([]); // All attempted inputs
     const [failedReadings, setFailedReadings] = useState([]); // 1 displays selected Kanji, 2 is end screen
+    const [points, setPoints] = useState(0);
+    const [attemptedReadings, setAttemptedReadings] = useState({});
 
     useEffect(() => {
         async function getKanjiOfDay() {
@@ -43,6 +44,32 @@ function KanjiGame() {
             setSelectedKanjiVocabRare(vocabEntries.filter(entry => entry.Common === false))
         } catch (err) {
            console.log(err)
+        }
+    }
+
+    function handleVocabAttempt(e) {
+        if(attemptedReadings[e]) {
+            // TODO move to tile if any, display 'already used' message
+        } else {
+            const commonEntryWords = selectedKanjiVocabCommon.filter(entry => entry.Readings.includes(e) === true);
+            const rareEntryWords = selectedKanjiVocabRare.filter(entry => entry.Readings.includes(e) === true);
+            const newPoints = commonEntryWords.length * 100 + rareEntryWords.length * 10;
+            const matchedVocab = {};
+            if(newPoints === 0) {
+                setFailedReadings(...failedReadings, e);
+            } else {
+                setPoints(points + newPoints);
+
+                commonEntryWords.forEach(element => {
+                    matchedVocab[element.Vocab_id] = true;
+                });
+
+
+                rareEntryWords.forEach(element => {
+                    matchedVocab[element.Vocab_id] = true;
+                });
+            }
+            setAttemptedReadings({...attemptedReadings, ...matchedVocab })
         }
     }
 
@@ -85,16 +112,16 @@ function KanjiGame() {
                                 button to reveal hints (-50%)
                             </div>
                         </div>
-                        <VocabTyper></VocabTyper>
+                        <VocabTyper onSubmit={(e) => handleVocabAttempt(e)}></VocabTyper>
                         <div className="Vocab-List"> 
                             { selectedKanjiVocabCommon.map((vocab) => 
-                                 <VocabTile kanji={selectedKanji.Kanji} vocab={vocab} key={vocab.Vocab_id}/>
+                                 <VocabTile hidden={!attemptedReadings[vocab.Vocab_id]} kanji={selectedKanji.Kanji} vocab={vocab} key={vocab.Vocab_id}/>
 
                             )}
                         </div>
                         <div className="Vocab-List"> 
                             { selectedKanjiVocabRare.map((vocab) => 
-                                 <VocabTile kanji={selectedKanji.Kanji} vocab={vocab} key={vocab.Vocab_id}/>
+                                 <VocabTile hidden={!attemptedReadings[vocab.Vocab_id]} kanji={selectedKanji.Kanji} vocab={vocab} key={vocab.Vocab_id}/>
                             )}
                         </div>
                     </div>
