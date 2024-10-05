@@ -77,6 +77,22 @@
   justify-content: center;
 }
 
+.Kanji-Game-Button {
+  --border-width: 3;
+  padding: 12px 20px;
+  font-size: 1rem;
+  border-width: calc(var(--border-width)* 1px);
+  border-style: solid;
+  border-color: black;
+  border-radius: 6px;
+  text-align: center;
+  outline: transparent;
+  transition: border-color calc(var(--transition, 0.2)* 1s) ease;
+  font-size: 1rem;
+  color: black;
+  margin-right: 10px;
+}
+
 .Kanji-Game-Board-Tile {
   width: 50%;
 }
@@ -93,6 +109,8 @@
   margin: 10px;
   font-family: "Kanji-Fancy", Verdana, Tahoma;
   font-size: 120px;
+  min-width: 10rem;
+  min-height: 10rem;
 }
 
 .Kanji-Box-N1 {
@@ -109,6 +127,17 @@
 }
 .Kanji-Box-N5 {
   background-color: rgb(186, 255, 203);
+}
+
+.Kanji-Score-Board {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.Kanji-Score {
+  font-size: 2rem;
 }
 
 .Vocab-Box {
@@ -134,15 +163,25 @@
   align-content: center;
 }
 
+.Vocab-Box-Kanji-Hidden-Full {
+  --wordLength: 0;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  min-height:  75px;
+  font-family: "Kanji-Fancy";
+  font-size: calc(120px - (4px * var(--wordLength)));
+  align-content: center;
+  height: 100%;
+}
+
 .Vocab-Box-Kanji-Hidden {
   --wordLength: 0;
   margin-top: 20px;
   margin-bottom: 20px;
   min-height:  75px;
   font-family: "Kanji-Fancy";
-  font-size: calc(120px);
+  font-size: calc(120px - (4px * var(--wordLength)));
   align-content: center;
-  height: 100%;
 }
 
 .Vocab-Box-Reading {

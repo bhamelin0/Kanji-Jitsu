@@ -4,6 +4,7 @@ import KanjiTile from './Components/kanji-tile';
 import VocabTyper from './Components/vocab-typer';
 import LangToggle from './Components/lang-toggle';
 import VocabTile from './Components/vocab-tile';
+import KanjiScoreBoard from './Components/kanji-score-board';
 
 function KanjiGame() {
     const [kanjiJson, setKanjiJson] = useState([]);
@@ -14,6 +15,7 @@ function KanjiGame() {
     const [failedReadings, setFailedReadings] = useState([]); // 1 displays selected Kanji, 2 is end screen
     const [points, setPoints] = useState(0);
     const [attemptedReadings, setAttemptedReadings] = useState({});
+    const [showGloss, setShowGloss] = useState(false);
 
     useEffect(() => {
         async function getKanjiOfDay() {
@@ -73,6 +75,11 @@ function KanjiGame() {
         }
     }
 
+    function handleGameOver() {
+    
+    }
+
+
     return (
       <div className="App">
         <div className="App-Body">
@@ -107,21 +114,27 @@ function KanjiGame() {
                                 <KanjiTile key={selectedKanji.Kanji_id} kanji={selectedKanji} showKanji />
                             </div>
                             <div className="Kanji-Game-Board-Right">
-                                Score: 50;
-                                button to give up
-                                button to reveal hints (-50%)
+                                <KanjiScoreBoard></KanjiScoreBoard>
+                                <div>
+                                    <button className="Kanji-Game-Button" onClick={() => handleGameOver()}>
+                                        Give Up
+                                    </button>
+                                    <button className="Kanji-Game-Button" onClick={() => setShowGloss(true)}>
+                                        Show Definitions (-50% score)
+                                    </button>
+                                </div>
                             </div>
                         </div>
                         <VocabTyper onSubmit={(e) => handleVocabAttempt(e)}></VocabTyper>
                         <div className="Vocab-List"> 
                             { selectedKanjiVocabCommon.map((vocab) => 
-                                 <VocabTile hidden={!attemptedReadings[vocab.Vocab_id]} kanji={selectedKanji.Kanji} vocab={vocab} key={vocab.Vocab_id}/>
+                                 <VocabTile hidden={!attemptedReadings[vocab.Vocab_id]} showGloss={showGloss} kanji={selectedKanji.Kanji} vocab={vocab} key={vocab.Vocab_id}/>
 
                             )}
                         </div>
                         <div className="Vocab-List"> 
                             { selectedKanjiVocabRare.map((vocab) => 
-                                 <VocabTile hidden={!attemptedReadings[vocab.Vocab_id]} kanji={selectedKanji.Kanji} vocab={vocab} key={vocab.Vocab_id}/>
+                                 <VocabTile hidden={!attemptedReadings[vocab.Vocab_id]} showGloss={showGloss} kanji={selectedKanji.Kanji} vocab={vocab} key={vocab.Vocab_id}/>
                             )}
                         </div>
                     </div>

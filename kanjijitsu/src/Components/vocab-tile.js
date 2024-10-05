@@ -2,9 +2,9 @@ import { React, useEffect, useRef  } from "react";
 import "../kanji-game.css"
 
 
-function VocabTile({vocab, kanji, hidden}) {
+function VocabTile({vocab, kanji, hidden, showGloss}) {
     const vocabStyle = { "--wordLength": vocab && vocab.Vocab.length < 6 ? vocab.Vocab.length : 10 };
-    const kanjiStyle = { "--wordLength": 2 };
+    const kanjiStyle = { "--wordLength": showGloss ? 7 : 2 };
     const ref = useRef(null);
 
     useEffect(() => {
@@ -13,11 +13,29 @@ function VocabTile({vocab, kanji, hidden}) {
         }
     }, [hidden])
 
+    function renderGloss() {
+        return (                   
+        <div className="Vocab-Box-Gloss-Container">
+            <div className="Vocab-Box-Gloss">
+                {vocab.Gloss[0]}
+            </div>
+            <div className="Vocab-Box-Gloss">
+                {vocab.Gloss[1]}
+            </div>
+            <div className="Vocab-Box-Gloss">
+                {vocab.Gloss[2]}
+            </div>
+        </div>);
+    }
+
     return (
         <div ref={ref} className={`Vocab-Box ${vocab.Common ? 'Vocab-Box-Common' : 'Vocab-Box-Rare'}`}>
             { hidden ? 
-                <div className="Vocab-Box-Kanji-Hidden" style={kanjiStyle}>
-                    {kanji}
+                <div>
+                    <div className={showGloss ? 'Vocab-Box-Kanji-Hidden' : `Vocab-Box-Kanji-Hidden-Full`} style={kanjiStyle}>
+                        {kanji}
+                    </div>
+                    { showGloss ? renderGloss() : null }
                 </div>
             :
                 <div>
@@ -25,8 +43,9 @@ function VocabTile({vocab, kanji, hidden}) {
                         {vocab.Vocab}
                     </div>
                     <div className="Vocab-Box-Reading">
-                    {vocab.Readings.join(', ')}
+                        { vocab.Readings.join(', ') }
                     </div>
+
                     <div className="Vocab-Box-Gloss-Container">
                         <div className="Vocab-Box-Gloss">
                             {vocab.Gloss[0]}
