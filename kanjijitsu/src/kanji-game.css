@@ -92,7 +92,7 @@
   border-radius: 6px;
   margin: 10px;
   font-family: "Kanji-Fancy", Verdana, Tahoma;
-  font-size: 5rem;
+  font-size: 120px;
 }
 
 .Kanji-Box-N1 {
@@ -118,7 +118,8 @@
   border-radius: 6px;
   margin: 10px;
   width: 50rem;
-  min-width: 20rem;
+  min-width: 15rem;
+  min-height: 15rem;
   display: flex;
   flex-direction: column;
 }
@@ -131,6 +132,17 @@
   font-family: "Kanji-Fancy";
   font-size: calc(80px - (4px * var(--wordLength)));
   align-content: center;
+}
+
+.Vocab-Box-Kanji-Hidden {
+  --wordLength: 0;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  min-height:  75px;
+  font-family: "Kanji-Fancy";
+  font-size: calc(120px);
+  align-content: center;
+  height: 100%;
 }
 
 .Vocab-Box-Reading {
@@ -177,9 +189,14 @@
   margin: 10px;
 }
 
+.Vocab-Typer {
+  display: inline;
+  width:100%;
+}
+
 .Vocab-Input {
   --border-width: 3;
-  width: 100%;
+  width: 80%;
   max-width: 20rem;
   padding: 12px 20px;
   font-size: 1rem;
@@ -190,7 +207,20 @@
   text-align: center;
   outline: transparent;
   transition: border-color calc(var(--transition, 0.2)* 1s) ease;
-  margin: 10px;
+  margin: 5px;
+}
+
+.Vocab-Input-Button {
+  --border-width: 3;
+  padding: 12px 20px;
+  font-size: 1rem;
+  border-width: calc(var(--border-width)* 1px);
+  border-style: solid;
+  border-color: black;
+  border-radius: 6px;
+  text-align: center;
+  outline: transparent;
+  transition: border-color calc(var(--transition, 0.2)* 1s) ease;
 }
 
 .Vocab-List {
