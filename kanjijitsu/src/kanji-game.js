@@ -16,6 +16,7 @@ function KanjiGame() {
     const [points, setPoints] = useState(0);
     const [attemptedReadings, setAttemptedReadings] = useState({});
     const [showGloss, setShowGloss] = useState(false);
+    const [boxCountStyle, setBoxCountStyle] = useState({ "--box-count": Math.floor((window.innerWidth * .9) / 250) - 1 });
 
     useEffect(() => {
         async function getKanjiOfDay() {
@@ -31,6 +32,15 @@ function KanjiGame() {
 
         getKanjiOfDay();
     }, []);
+
+    useEffect(() => {
+        const handleResize = () => {
+            setBoxCountStyle({ "--box-count": Math.floor((window.innerWidth * .9) / 250) - 1 });
+        }
+        window.addEventListener('resize', handleResize);
+        return () => { window.removeEventListener('resize', handleResize); };
+    }, []);
+    
 
     async function handleKanjiTileClick(kanji) {
         setGameStage(1);
@@ -77,6 +87,10 @@ function KanjiGame() {
 
     function handleGameOver() {
     
+    }
+
+    function calculateBoxCount() {
+        
     }
 
 
@@ -126,13 +140,13 @@ function KanjiGame() {
                             </div>
                         </div>
                         <VocabTyper onSubmit={(e) => handleVocabAttempt(e)}></VocabTyper>
-                        <div className="Vocab-List"> 
+                        <div className="Vocab-List" style={boxCountStyle}> 
                             { selectedKanjiVocabCommon.map((vocab) => 
                                  <VocabTile hidden={!attemptedReadings[vocab.Vocab_id]} showGloss={showGloss} kanji={selectedKanji.Kanji} vocab={vocab} key={vocab.Vocab_id}/>
 
                             )}
                         </div>
-                        <div className="Vocab-List"> 
+                        <div className="Vocab-List" style={boxCountStyle}> 
                             { selectedKanjiVocabRare.map((vocab) => 
                                  <VocabTile hidden={!attemptedReadings[vocab.Vocab_id]} showGloss={showGloss} kanji={selectedKanji.Kanji} vocab={vocab} key={vocab.Vocab_id}/>
                             )}

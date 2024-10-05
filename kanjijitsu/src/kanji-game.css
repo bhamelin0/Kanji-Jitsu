@@ -1,3 +1,8 @@
+html{
+  --kanji-box-width: 250;
+  --box-count: 8;
+}
+
 .App {
   background-image: url("\\Images\\Shiny Overlay.svg");
   background-size: cover;
@@ -146,8 +151,7 @@
   border-color: black;
   border-radius: 6px;
   margin: 10px;
-  width: 50rem;
-  min-width: 15rem;
+  min-width: calc(1px * var(--kanji-box-width));
   min-height: 15rem;
   display: flex;
   flex-direction: column;
@@ -271,6 +275,7 @@
   margin: 10x;
   background-color:rgba(255, 255, 255, 0.425);
   border-radius: 6px;
+  width: calc((var(--kanji-box-width) + 25) * var(--box-count) * 1px);
 }
 
 .switch-container {
