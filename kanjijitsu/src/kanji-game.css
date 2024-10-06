@@ -96,14 +96,21 @@ html{
   font-size: 1rem;
   color: black;
   margin-right: 10px;
+  min-width: 320px;
+  font-size: 20px;
 }
 
 .Kanji-Game-Board-Tile {
-  width: 50%;
+
 }
 
 .Kanji-Game-Board-Right {
   width: 100%;
+  align-items:start;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  margin: 20px; 
 }
 
 .Kanji-Box {
@@ -155,6 +162,18 @@ html{
   min-height: 15rem;
   display: flex;
   flex-direction: column;
+}
+
+.Vocab-Box-Hidden {
+  background-color: transparent;
+}
+
+.Vocab-Box-Common {
+  background-color: rgb(186, 255, 203);
+}
+
+.Vocab-Box-Rare {
+  background-color: rgb(248, 248, 248);
 }
 
 .Vocab-Box-Kanji {
@@ -214,24 +233,6 @@ html{
   margin: 10px;
 }
 
-.Vocab-Box-Common {
-  border-width: 3px;
-  border-style: solid;
-  border-color: black;
-  background-color: rgb(186, 255, 203);
-  border-radius: 6px;
-  margin: 10px;
-}
-
-.Vocab-Box-Rare {
-  border-width: 3px;
-  border-style: solid;
-  border-color: black;
-  background-color: rgb(248, 248, 248);
-  border-radius: 6px;
-  margin: 10px;
-}
-
 .Vocab-Typer {
   display: inline;
   width:100%;
@@ -242,7 +243,7 @@ html{
   width: 80%;
   max-width: 20rem;
   padding: 12px 20px;
-  font-size: 1rem;
+  font-size: 20px;
   border-width: calc(var(--border-width)* 1px);
   border-style: solid;
   border-color: black;
@@ -256,7 +257,7 @@ html{
 .Vocab-Input-Button {
   --border-width: 3;
   padding: 12px 20px;
-  font-size: 1rem;
+  font-size: 20px;
   border-width: calc(var(--border-width)* 1px);
   border-style: solid;
   border-color: black;

@@ -1,11 +1,11 @@
 import {React } from "react";
 import "../kanji-game.css"
 
-function KanjiScoreBoard() {
+function KanjiScoreBoard({score}) {
     return (
         <div className="Kanji-Score-Board">
             <div className="Kanji-Score">
-                Score: 50
+                Score: {score}
             </div>
         </div>
 

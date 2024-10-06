@@ -1,10 +1,11 @@
 import './kanji-game.css';
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import KanjiTile from './Components/kanji-tile';
 import VocabTyper from './Components/vocab-typer';
 import LangToggle from './Components/lang-toggle';
 import VocabTile from './Components/vocab-tile';
 import KanjiScoreBoard from './Components/kanji-score-board';
+import { useDraggable } from "react-use-draggable-scroll-safe";
 
 function KanjiGame() {
     const [kanjiJson, setKanjiJson] = useState([]);
@@ -17,6 +18,12 @@ function KanjiGame() {
     const [attemptedReadings, setAttemptedReadings] = useState({});
     const [showGloss, setShowGloss] = useState(false);
     const [boxCountStyle, setBoxCountStyle] = useState({ "--box-count": Math.floor((window.innerWidth * .9) / 250) - 1 });
+
+    // Scroll Dragging
+    const commonRef = useRef(); // We will use React useRef hook to reference the wrapping div:
+    const rareRef = useRef(); // We will use React useRef hook to reference the wrapping div:
+    const commonEvents = useDraggable(commonRef).events; // Now we pass the reference to the useDraggable hook:
+    const rareEvents = useDraggable(rareRef).events; // Now we pass the reference to the useDraggable hook:
 
     useEffect(() => {
         async function getKanjiOfDay() {
@@ -65,7 +72,7 @@ function KanjiGame() {
         } else {
             const commonEntryWords = selectedKanjiVocabCommon.filter(entry => entry.Readings.includes(e) === true);
             const rareEntryWords = selectedKanjiVocabRare.filter(entry => entry.Readings.includes(e) === true);
-            const newPoints = commonEntryWords.length * 100 + rareEntryWords.length * 10;
+            const newPoints = (commonEntryWords.length * 100 + rareEntryWords.length * 10) / (showGloss ? 2 : 1);
             const matchedVocab = {};
             if(newPoints === 0) {
                 setFailedReadings(...failedReadings, e);
@@ -114,8 +121,10 @@ function KanjiGame() {
                             <KanjiTile key={kanji.Kanji_id} kanji={kanji} onClick={() => handleKanjiTileClick(kanji)} />
 
                         )}
+                        </div>
                     </div>
-                    </div>
+
+                    
                 : !selectedKanjiVocabCommon && gameStage == 1 ? (
                     <div>Loading!</div>
                 )
@@ -128,25 +137,22 @@ function KanjiGame() {
                                 <KanjiTile key={selectedKanji.Kanji_id} kanji={selectedKanji} showKanji />
                             </div>
                             <div className="Kanji-Game-Board-Right">
-                                <KanjiScoreBoard></KanjiScoreBoard>
-                                <div>
-                                    <button className="Kanji-Game-Button" onClick={() => handleGameOver()}>
-                                        Give Up
-                                    </button>
-                                    <button className="Kanji-Game-Button" onClick={() => setShowGloss(true)}>
-                                        Show Definitions (-50% score)
-                                    </button>
-                                </div>
+                                <KanjiScoreBoard score={points}></KanjiScoreBoard>
+                                <button className="Kanji-Game-Button" onClick={() => setShowGloss(true)}>
+                                    Show Definitions (-50% score)
+                                </button>
+                                <button className="Kanji-Game-Button" onClick={() => handleGameOver()}>
+                                    Give Up
+                                </button>
                             </div>
                         </div>
                         <VocabTyper onSubmit={(e) => handleVocabAttempt(e)}></VocabTyper>
-                        <div className="Vocab-List" style={boxCountStyle}> 
+                        <div className="Vocab-List" style={boxCountStyle} {...commonEvents} ref={commonRef}>
                             { selectedKanjiVocabCommon.map((vocab) => 
                                  <VocabTile hidden={!attemptedReadings[vocab.Vocab_id]} showGloss={showGloss} kanji={selectedKanji.Kanji} vocab={vocab} key={vocab.Vocab_id}/>
-
                             )}
                         </div>
-                        <div className="Vocab-List" style={boxCountStyle}> 
+                        <div className="Vocab-List" style={boxCountStyle} {...rareEvents} ref={rareRef}> 
                             { selectedKanjiVocabRare.map((vocab) => 
                                  <VocabTile hidden={!attemptedReadings[vocab.Vocab_id]} showGloss={showGloss} kanji={selectedKanji.Kanji} vocab={vocab} key={vocab.Vocab_id}/>
                             )}

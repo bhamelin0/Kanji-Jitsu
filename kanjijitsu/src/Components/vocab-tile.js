@@ -28,12 +28,24 @@ function VocabTile({vocab, kanji, hidden, showGloss}) {
         </div>);
     }
 
+    function renderComplete() {
+        // TODO 
+    }
+
+    function renderHidden() {
+        // TODO 
+    }
+
+    function renderGameOver() {
+        // TODO 
+    }
+
     return (
-        <div ref={ref} className={`Vocab-Box ${vocab.Common ? 'Vocab-Box-Common' : 'Vocab-Box-Rare'}`}>
+        <div ref={ref} className={`Vocab-Box ${hidden ? 'Vocab-Box-Hidden' : vocab.Common ? 'Vocab-Box-Common' : 'Vocab-Box-Rare'}`}>
             { hidden ? 
                 <div>
                     <div className={showGloss ? 'Vocab-Box-Kanji-Hidden' : `Vocab-Box-Kanji-Hidden-Full`} style={kanjiStyle}>
-                        {kanji}
+                        {kanji}?
                     </div>
                     { showGloss ? renderGloss() : null }
                 </div>
