@@ -156,10 +156,13 @@ function KanjiGame() {
         </GameOverDialog>
         <div className="App-Body">
             <div className="App-Toolbar">
-                <a onClick={() => handleReturnToLevelSelectorClick()}>Return to Level Select</a>
-                <LangToggle/>
-                
-            </div>
+                <div>
+                    <button className="Kanji-Game-Button App-Toolbar-Breadcrumb" hidden={gameStage < 1} onClick={() => handleReturnToLevelSelectorClick()}>Return to Level Select</button>
+                </div>
+                <div>
+                    <LangToggle/>
+                </div>
+            </div>    
             <header className="App-header">
             <p>
                 Kanji Jitsu!

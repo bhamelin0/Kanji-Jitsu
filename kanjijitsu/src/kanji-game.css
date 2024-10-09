@@ -28,6 +28,11 @@ html{
   width: 100%;
 }
 
+.App-Toolbar-Breadcrumb {
+  font: 20px;
+  margin: 10px;
+}
+
 .App-logo {
   height: 40vmin;
   pointer-events: none;
