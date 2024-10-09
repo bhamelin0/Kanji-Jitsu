@@ -1,23 +1,24 @@
 import {React, useState } from "react";
 import "../kanji-game.css"
 
-function LangToggle() {
-    const [checked, setChecked] = useState(false);
+function LangToggle({checked, onClick}) {
 
-    function onClick() {    
-        setChecked(!checked);
+    function handleClick() {
+        checked = !checked;
+        if(onClick) {
+            onClick();
+        }
     }
     
     return (
         <div className="switch-container">
             <label className="switch">
-                <input type="checkbox" checked={checked} onClick={onClick} />
+                <input type="checkbox" checked={checked} onClick={handleClick} />
                 <div className="slider">
                     <span className="slider-text">{checked ? "EN" : "JP"}</span>
                 </div>
             </label>
         </div>
-
     );
 }
   

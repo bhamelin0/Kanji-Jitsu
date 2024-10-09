@@ -1,7 +1,7 @@
 import { React, useId, useState } from "react";
 import * as wanakana from 'wanakana';
 
-function VocabTyper({onSubmit}) {
+function VocabTyper({enabled, onSubmit}) {
     const id = useId();
     const [input, setInput] = useState('');
     const [bound, setBound] = useState(false);
@@ -29,8 +29,8 @@ function VocabTyper({onSubmit}) {
 
     return (
         <span className="Vocab-Typer">
-            <input id={id} className="Vocab-Input" placeholder="Write vocabulary!" value={input} onKeyDown={(e) => handleKeyPress(e)} onInput={e => setInput(e.target.value)}></input>
-            <button className="Vocab-Input-Button" onClick={() => onSubmitHandler(input)}>Submit</button>
+            <input id={id} disabled={!enabled} className="Vocab-Input" placeholder="Write vocabulary!" value={input} onKeyDown={(e) => handleKeyPress(e)} onInput={e => setInput(e.target.value)}></input>
+            <button className="Vocab-Input-Button" onClick={() => onSubmitHandler(input)} disabled={!enabled}>Submit</button>
         </span>
 
     );

@@ -4,7 +4,7 @@ html{
 }
 
 .App {
-  background-image: url("\\Images\\Shiny Overlay.svg");
+  background-image: url("\\Images\\Shiny Overlay2.svg");
   background-size: cover;
 }
 
@@ -24,7 +24,7 @@ html{
 .App-Toolbar {
   position: absolute;
   display: flex;
-  justify-content: right;
+  justify-content: space-between;
   width: 100%;
 }
 
@@ -41,12 +41,12 @@ html{
 
 .Kanji-Selector-Subtitle{
   font-size: 30px;
-  color: white;
+  color: black;
 }
 
 .App-header {
   font-size: calc(20px + 2vmin);
-  color: white;
+  color: black;
 }
 
 .App-link {
@@ -74,14 +74,6 @@ html{
   width: 100%;
   justify-content: center;
 }
-
-.Kanji-Game-Board-Left {
-  display: flex;
-  flex-direction: row;
-  width: 100%;
-  justify-content: center;
-}
-
 .Kanji-Game-Button {
   --border-width: 3;
   padding: 12px 20px;
@@ -96,12 +88,23 @@ html{
   font-size: 1rem;
   color: black;
   margin-right: 10px;
+  margin-bottom: 10px;
   min-width: 320px;
   font-size: 20px;
 }
 
-.Kanji-Game-Board-Tile {
+.Kanji-Game-Board-Left {
+  width: 100%;
+  align-items: center;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  margin: 20px; 
+}
 
+.Kanji-Game-Board-Buttons {
+  display: flex;
+  flex-direction: column;
 }
 
 .Kanji-Game-Board-Right {
@@ -152,6 +155,10 @@ html{
   font-size: 2rem;
 }
 
+.Kanji-Game-Subtext {
+  font-size: 20px;
+}
+
 .Vocab-Box {
   border-width: 3px;
   border-style: solid;
@@ -195,6 +202,7 @@ html{
   font-size: calc(120px - (4px * var(--wordLength)));
   align-content: center;
   height: 100%;
+  color:rgba(0, 0, 0, 0.692)
 }
 
 .Vocab-Box-Kanji-Hidden {
@@ -205,6 +213,7 @@ html{
   font-family: "Kanji-Fancy";
   font-size: calc(120px - (4px * var(--wordLength)));
   align-content: center;
+  color:rgba(0, 0, 0, 0.692)
 }
 
 .Vocab-Box-Reading {
@@ -277,6 +286,48 @@ html{
   background-color:rgba(255, 255, 255, 0.425);
   border-radius: 6px;
   width: calc((var(--kanji-box-width) + 25) * var(--box-count) * 1px);
+  scrollbar-color: rgb(59, 59, 59) rgba(255, 255, 255, 0);
+  scrollbar-width: auto;
+}
+
+.Game-Over-Dialog {
+  position: absolute;
+  inset: 40px;
+  border: 1px solid rgb(204, 204, 204);
+  border-radius: 10px;
+  background: rgb(255, 255, 255);
+  overflow: auto;
+  outline: none;
+  padding: 20px;
+  height:50%;
+  width: 50%;
+  top: 25%;
+  left: 25%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.Game-Over-Container {
+  text-align: center;
+  display:flex;
+  flex-direction: column;
+  justify-content: center;
+  font-size: 30px;
+  margin: 20px;
+  align-items: center;
+}
+
+.Game-Over-List {
+  width: fit-content;
+  text-align: justify;
+}
+
+.Game-Over-Buttons {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
 }
 
 .switch-container {

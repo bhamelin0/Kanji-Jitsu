@@ -1,10 +1,13 @@
 import './kanji-game.css';
 import React, { useState, useEffect, useRef } from "react";
+import CrossSign from './Components/cross-sign';
 import KanjiTile from './Components/kanji-tile';
 import VocabTyper from './Components/vocab-typer';
 import LangToggle from './Components/lang-toggle';
+import Loader from './Components/loader';
 import VocabTile from './Components/vocab-tile';
 import KanjiScoreBoard from './Components/kanji-score-board';
+import GameOverDialog from './Components/game-over-dialog';
 import { useDraggable } from "react-use-draggable-scroll-safe";
 
 function KanjiGame() {
@@ -14,9 +17,14 @@ function KanjiGame() {
     const [selectedKanjiVocabCommon, setSelectedKanjiVocabCommon] = useState(null); // List of common valid Kanji inputs
     const [selectedKanjiVocabRare, setSelectedKanjiVocabRare] = useState(null); // List of rare valid Vocab inputs
     const [failedReadings, setFailedReadings] = useState([]); // 1 displays selected Kanji, 2 is end screen
+
     const [points, setPoints] = useState(0);
     const [attemptedReadings, setAttemptedReadings] = useState({});
+    const [matchedVocabCommon, setMatchedVocabCommon] = useState({});
+    const [matchedVocabRare, setMatchedVocabRare] = useState({});
+
     const [showGloss, setShowGloss] = useState(false);
+    const [showAll, setShowAll] = useState(false);
     const [boxCountStyle, setBoxCountStyle] = useState({ "--box-count": Math.floor((window.innerWidth * .9) / 250) - 1 });
 
     // Scroll Dragging
@@ -73,39 +81,84 @@ function KanjiGame() {
             const commonEntryWords = selectedKanjiVocabCommon.filter(entry => entry.Readings.includes(e) === true);
             const rareEntryWords = selectedKanjiVocabRare.filter(entry => entry.Readings.includes(e) === true);
             const newPoints = (commonEntryWords.length * 100 + rareEntryWords.length * 10) / (showGloss ? 2 : 1);
-            const matchedVocab = {};
+            const newMatchedVocabCommon = {};
+            const newMatchedVocabRare = {};
             if(newPoints === 0) {
-                setFailedReadings(...failedReadings, e);
+                if(failedReadings.length === 2) {
+                    handleGameOver();
+                }
+                setFailedReadings([...failedReadings, e]);
+
             } else {
                 setPoints(points + newPoints);
 
                 commonEntryWords.forEach(element => {
-                    matchedVocab[element.Vocab_id] = true;
+                    newMatchedVocabCommon[element.Vocab_id] = true;
                 });
 
 
                 rareEntryWords.forEach(element => {
-                    matchedVocab[element.Vocab_id] = true;
+                    newMatchedVocabRare[element.Vocab_id] = true;
                 });
             }
-            setAttemptedReadings({...attemptedReadings, ...matchedVocab })
+            attemptedReadings[e] = true;
+            setAttemptedReadings({...attemptedReadings });
+            setMatchedVocabCommon({...matchedVocabCommon, ...newMatchedVocabCommon});
+            setMatchedVocabRare({...matchedVocabRare, ...newMatchedVocabRare});
         }
     }
 
-    function handleGameOver() {
+    async function handleGameOver() {
+        setGameStage(2);
+        setShowAll(true);
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        setGameStage(3); // Game over dialog will open here
+    }
+
+    function handleContinueClick() {
+        console.log("test");
+        setGameStage(4); // Close the game over, allow player to return to N level selection
+    }
+
+    function reset() {
+        setFailedReadings([]);
+        setPoints(0);
+        setAttemptedReadings({});
+        setShowGloss(false);
+        setShowAll(false);
+        setMatchedVocabCommon({})
+        setMatchedVocabRare({})
+    }
+
+    function handleTryAgainClick() {
+        setGameStage(1);
+        reset();
+    }
+
+    function handleReturnToLevelSelectorClick() {
+        setGameStage(0);
+        setSelectedKanji(null);
+        reset();
+    }
     
-    }
-
-    function calculateBoxCount() {
-        
-    }
-
-
     return (
       <div className="App">
+        <GameOverDialog 
+            isOpen={gameStage === 3} 
+            score={points}
+            matchedVocabCommon={matchedVocabCommon} 
+            matchedVocabRare={matchedVocabRare} 
+            selectedKanjiVocabCommon={selectedKanjiVocabCommon} 
+            selectedKanjiVocabRare={selectedKanjiVocabRare} 
+            onContinueClick={() => handleContinueClick()} 
+            onTryAgainClick={() => handleTryAgainClick()} 
+            onReturnToLevelSelectorClick={() => handleReturnToLevelSelectorClick()}>
+        </GameOverDialog>
         <div className="App-Body">
             <div className="App-Toolbar">
+                <a onClick={() => handleReturnToLevelSelectorClick()}>Return to Level Select</a>
                 <LangToggle/>
+                
             </div>
             <header className="App-header">
             <p>
@@ -126,39 +179,53 @@ function KanjiGame() {
 
                     
                 : !selectedKanjiVocabCommon && gameStage == 1 ? (
-                    <div>Loading!</div>
+                    <Loader/>
                 )
-                : selectedKanjiVocabCommon && gameStage == 1 ? (
-                    <div className="Kanji-Game-Stage-1">
-                        <div className="Kanji-Game-Board">
-                            <div className="Kanji-Game-Board-Left">
-                            </div>
-                            <div className="Kanji-Game-Board-Tile">
-                                <KanjiTile key={selectedKanji.Kanji_id} kanji={selectedKanji} showKanji />
-                            </div>
-                            <div className="Kanji-Game-Board-Right">
-                                <KanjiScoreBoard score={points}></KanjiScoreBoard>
-                                <button className="Kanji-Game-Button" onClick={() => setShowGloss(true)}>
+                :
+                <div className="Kanji-Game-Stage-1">
+                    <div className="Kanji-Game-Board">
+                        <div className="Kanji-Game-Board-Left">
+                            <div className="Kanji-Game-Board-Buttons">
+                                <button className="Kanji-Game-Button" onClick={() => setShowGloss(true)} disabled={showGloss || gameStage > 1}>
                                     Show Definitions (-50% score)
                                 </button>
-                                <button className="Kanji-Game-Button" onClick={() => handleGameOver()}>
-                                    Give Up
+                                <button className="Kanji-Game-Button" onClick={() => handleGameOver()} disabled={gameStage > 1}>
+                                    Reveal Answers
                                 </button>
                             </div>
+                            <div className="Kanji-Game-Board-Buttons">
+                                <CrossSign active={ failedReadings.length > 0 }/>
+                                <CrossSign active={ failedReadings.length > 1 }/>
+                                <CrossSign active={ failedReadings.length > 2 }/>
+                            </div>
+
+
                         </div>
-                        <VocabTyper onSubmit={(e) => handleVocabAttempt(e)}></VocabTyper>
-                        <div className="Vocab-List" style={boxCountStyle} {...commonEvents} ref={commonRef}>
-                            { selectedKanjiVocabCommon.map((vocab) => 
-                                 <VocabTile hidden={!attemptedReadings[vocab.Vocab_id]} showGloss={showGloss} kanji={selectedKanji.Kanji} vocab={vocab} key={vocab.Vocab_id}/>
-                            )}
+                        <div className="Kanji-Game-Board-Tile">
+                            <KanjiTile key={selectedKanji.Kanji_id} kanji={selectedKanji} showKanji />
                         </div>
-                        <div className="Vocab-List" style={boxCountStyle} {...rareEvents} ref={rareRef}> 
-                            { selectedKanjiVocabRare.map((vocab) => 
-                                 <VocabTile hidden={!attemptedReadings[vocab.Vocab_id]} showGloss={showGloss} kanji={selectedKanji.Kanji} vocab={vocab} key={vocab.Vocab_id}/>
-                            )}
+                        <div className="Kanji-Game-Board-Right">
+                            <KanjiScoreBoard 
+                                score={points} 
+                                matchedVocabCommon={matchedVocabCommon} 
+                                matchedVocabRare={matchedVocabRare}
+                                selectedKanjiVocabCommon={selectedKanjiVocabCommon}
+                                selectedKanjiVocabRare={selectedKanjiVocabRare}>
+                            </KanjiScoreBoard>
                         </div>
                     </div>
-                ) :   <div> Game Over! </div>
+                    <VocabTyper enabled={gameStage < 2} onSubmit={(e) => handleVocabAttempt(e)}></VocabTyper>
+                        <div className="Vocab-List" style={boxCountStyle} {...commonEvents} ref={commonRef}>
+                            { selectedKanjiVocabCommon.map((vocab) => 
+                                <VocabTile hidden={!matchedVocabCommon[vocab.Vocab_id]} showGloss={showGloss} showAll={showAll} kanji={selectedKanji.Kanji} vocab={vocab} key={vocab.Vocab_id}/>
+                            )}
+                        </div>
+                    <div className="Vocab-List" style={boxCountStyle} {...rareEvents} ref={rareRef}> 
+                        { selectedKanjiVocabRare.map((vocab) => 
+                                <VocabTile hidden={!matchedVocabRare[vocab.Vocab_id]} showGloss={showGloss} showAll={showAll} kanji={selectedKanji.Kanji} vocab={vocab} key={vocab.Vocab_id}/>
+                        )}
+                    </div>
+                </div>
             }
         </div>
     </div>

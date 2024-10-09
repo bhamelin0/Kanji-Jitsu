@@ -1,0 +1,28 @@
+.Load-Container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+}
+
+.Loader {
+    width: 100px;
+    aspect-ratio: 1;
+    --_c:no-repeat radial-gradient(farthest-side,#ffffff 92%,#ffffff00);
+    background: 
+      var(--_c) top,
+      var(--_c) left,
+      var(--_c) right,
+      var(--_c) bottom;
+    background-size: 20px 20px;
+    animation: l7 1s infinite;
+    margin: 5px;
+  }
+  @keyframes l7 {to{transform: rotate(.5turn)}}
+
+.Load-Title {
+  font-size: 30px;
+  color: black;
+  margin: 20px;
+}

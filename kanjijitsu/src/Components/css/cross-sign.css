@@ -1,0 +1,47 @@
+.Cross-Sign {
+    display: inline-block;
+    width: 30px;
+    height: 30px;
+    position: relative;
+    transform: rotate(45deg);
+    margin: 10px;
+  }
+  
+  .Cross-Sign-Circle-Inactive {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    background-color: rgba(255, 255, 255, 0.521);
+    border-radius: 20px;
+    left: 0;
+    top: 0;
+  }
+
+  .Cross-Sign-Circle {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    background-color: red;
+    border-radius: 20px;
+    left: 0;
+    top: 0;
+  }
+  
+  .Cross-Sign-Stem,
+  .Cross-Sign-Stem-2 {
+    position: absolute;
+    background-color: #fff;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  
+  .Cross-Sign-Stem {
+    width: 6px;
+    height: 18px;
+  }
+  
+  .Cross-Sign-Stem-2 {
+    width: 18px;
+    height: 6px;
+  }
