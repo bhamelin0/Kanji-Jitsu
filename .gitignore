@@ -3,6 +3,7 @@ Notes
 tmp
 .tmp
 envAWS.json
+envAWS2.json
 Lambdatest/LambdaBuilder.bat
 bootstrap
 lambda-handler.zip
