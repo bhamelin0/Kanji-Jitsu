@@ -10,6 +10,7 @@
 
 # production
 /build
+/kanjijitsu/build
 
 # misc
 .DS_Store

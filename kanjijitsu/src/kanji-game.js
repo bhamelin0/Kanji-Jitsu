@@ -36,7 +36,7 @@ function KanjiGame() {
     useEffect(() => {
         async function getKanjiOfDay() {
             try {
-                const res = await fetch(`http://127.0.0.1:3001/dailyKanji`);
+                const res = await fetch(`kanjijitsu.com/dailyKanji`);
                 const kanjiJson = await res.json();
                 setKanjiJson(kanjiJson)
                 console.log(kanjiJson)
@@ -63,7 +63,7 @@ function KanjiGame() {
         setSelectedKanji(kanji)
 
         try {
-            const res = await fetch(`http://127.0.0.1:3001/vocabForKanji?kanji=${kanji.Kanji}`)
+            const res = await fetch(`kanjijitsu.com/vocabForKanji?kanji=${kanji.Kanji}`)
             const vocabJson = await res.json();
             const vocabEntries = vocabJson.VocabCollection;
             console.log(vocabEntries);
