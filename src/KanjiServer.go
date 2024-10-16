@@ -1,8 +1,8 @@
 package main
 
 import (
-	"KanjiWordle/KanjiDBLib"
-	"KanjiWordle/PostgresConn"
+	"KanjiWordle/src/KanjiDBLib"
+	"KanjiWordle/src/PostgresConn"
 	"context"
 	"database/sql"
 	"os"
