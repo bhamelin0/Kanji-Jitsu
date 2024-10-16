@@ -1,4 +1,5 @@
 import './kanji-game.css';
+import { getDailyKanjiRoute, getDailyVocabRoute } from './Library/fetchEnv.js';
 import React, { useState, useEffect, useRef } from "react";
 import CrossSign from './Components/cross-sign';
 import KanjiTile from './Components/kanji-tile';
@@ -36,7 +37,7 @@ function KanjiGame() {
     useEffect(() => {
         async function getKanjiOfDay() {
             try {
-                const res = await fetch(`http://127.0.0.1:3001/dailyKanji`);
+                const res = await fetch(getDailyKanjiRoute());
                 const kanjiJson = await res.json();
                 setKanjiJson(kanjiJson)
                 console.log(kanjiJson)
@@ -55,7 +56,6 @@ function KanjiGame() {
         window.addEventListener('resize', handleResize);
         return () => { window.removeEventListener('resize', handleResize); };
     }, []);
-    
 
     async function handleKanjiTileClick(kanji) {
         setGameStage(1);
@@ -63,7 +63,7 @@ function KanjiGame() {
         setSelectedKanji(kanji)
 
         try {
-            const res = await fetch(`http://127.0.0.1:3001/vocabForKanji?kanji=${kanji.Kanji}`)
+            const res = await fetch(getDailyVocabRoute(kanji.Kanji));
             const vocabJson = await res.json();
             const vocabEntries = vocabJson.VocabCollection;
             console.log(vocabEntries);
