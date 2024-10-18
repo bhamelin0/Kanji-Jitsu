@@ -8,4 +8,4 @@ Lambdatest/LambdaBuilder.bat
 bootstrap
 lambda-handler.zip
 /node_modules
-/kanjijitsu/build
+/kanjijitsu-ui/build

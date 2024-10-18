@@ -36,7 +36,7 @@ func getVocabForKanjiHandler(c *fiber.Ctx, db *sql.DB) error {
 }
 
 func serveStatic(app *fiber.App) {
-	app.Static("/", "./kanjijitsu/build")
+	app.Static("/", "./kanjijitsu-ui/build")
 }
 
 func main() {
