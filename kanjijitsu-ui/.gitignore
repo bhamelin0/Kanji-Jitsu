@@ -10,7 +10,7 @@
 
 # production
 /build
-/kanjijitsu/build
+/kanjijitsu-ui/build
 
 # misc
 .DS_Store
