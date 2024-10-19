@@ -1,5 +1,5 @@
 import { React, useState } from "react";
-import "../kanji-game.css"
+import '../css/kanji-game.css'
 
 function KanjiTile({ kanji, showKanji, onClick }) {
     const [tileClicked, setTileClicked] = useState(false);
@@ -11,7 +11,7 @@ function KanjiTile({ kanji, showKanji, onClick }) {
         }
     }
     return (
-        <button className={`kanji Kanji-Box ${!showKanji && !tileClicked ? "Kanji-Box-Hidden" : ""} Kanji-Box-N${kanji.N_level}`} onClick={handleClick}>
+        <button className={`kanji Kanji-Box ${!showKanji && !tileClicked ? "Kanji-Box-Hidden" : ""} ${onClick ? "Kanji-Box-Hover" : ""} Kanji-Box-N${kanji.N_level}`} onClick={handleClick}>
             {showKanji || tileClicked ? kanji.Kanji : `N${kanji.N_level}`}
         </button>
     );

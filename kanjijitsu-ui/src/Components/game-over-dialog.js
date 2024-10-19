@@ -1,6 +1,6 @@
 import { React, useState } from "react";
 import ReactModal from 'react-modal';
-import "../kanji-game.css"
+import '../css/kanji-game.css'
 
 function GameOverDialog({isOpen, score, matchedVocabCommon, matchedVocabRare, selectedKanjiVocabCommon, selectedKanjiVocabRare, onReturnToLevelSelectorClick, onContinueClick, onTryAgainClick}) {
     const [showCopyText, setShowCopyText] = useState(false);

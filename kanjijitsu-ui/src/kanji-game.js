@@ -1,4 +1,4 @@
-import './kanji-game.css';
+import './css/kanji-game.css';
 import { getDailyKanjiRoute, getDailyVocabRoute } from './Library/fetchEnv.js';
 import React, { useState, useEffect, useRef } from "react";
 import CrossSign from './Components/cross-sign';
@@ -57,8 +57,11 @@ function KanjiGame() {
     }, []);
 
     async function handleKanjiTileClick(kanji) {
+        if(selectedKanji) { 
+            return; 
+        }
+
         setGameStage(1);
-        console.log("Clicked Kanji " + kanji.Kanji + " Level " + kanji.N_level);
         setSelectedKanji(kanji)
 
         try {
@@ -166,7 +169,7 @@ function KanjiGame() {
             </div>    
             <header className="App-header">
             <p>
-                Kanji Jitsu!
+                Kanji Jitsu
             </p>
             </header>
             { 
@@ -193,6 +196,9 @@ function KanjiGame() {
                                 </button>
                                 <button className="Kanji-Game-Button" onClick={() => handleGameOver()} disabled={gameStage > 1}>
                                     Reveal Answers
+                                </button>
+                                <button className="Kanji-Game-Button" onClick={() => handleGameOver()} hidden={gameStage > 3}>
+                                    Finish Reviewing
                                 </button>
                             </div>
                             <div className="Kanji-Game-Board-Buttons">

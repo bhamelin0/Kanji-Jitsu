@@ -1,5 +1,5 @@
 import {React, useState } from "react";
-import "../kanji-game.css"
+import '../css/kanji-game.css'
 
 function LangToggle({checked, onClick}) {
 

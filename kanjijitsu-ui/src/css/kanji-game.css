@@ -5,7 +5,7 @@ html{
 }
 
 .App {
-  background-image: url("\\Images\\Shiny Overlay2.svg");
+  background-image: url("..\\Images\\Shiny Overlay2.svg");
   background-size: cover;
 }
 
@@ -54,6 +54,13 @@ html{
   color: #61dafb;
 }
 
+.no-select {
+  -webkit-user-select: none; /* Safari */
+  -moz-user-select: none;    /* Firefox */
+  -ms-user-select: none;     /* Internet Explorer/Edge */
+  user-select: none;         /* Standard */
+}
+
 .Kanji-Selector {
   display: flex;
   width: 100%;
@@ -92,6 +99,23 @@ html{
   margin-bottom: 10px;
   min-width: 320px;
   font-size: 20px;
+  box-shadow: 2px 2px black;
+  background-color: rgb(255, 255, 255);
+  cursor: pointer;
+}
+
+.Kanji-Game-Button:hover {
+  box-shadow: 2px 2px 0px 3px black;
+  border-radius: 6px;
+}
+
+.Kanji-Game-Button:disabled {
+  color: rgb(129, 129, 129);
+  background-color: rgba(255, 255, 255, 0.603);
+}
+
+.Kanji-Game-Button:disabled:hover {
+  box-shadow: 2px 2px black;
 }
 
 .Kanji-Game-Board-Left {
@@ -127,6 +151,13 @@ html{
   font-size: 120px;
   min-width: 10rem;
   min-height: 10rem;
+  box-shadow: 5px 5px black;
+  cursor: pointer;
+}
+
+.Kanji-Box-Hover:hover {
+  box-shadow: 3px 3px 0px 5px black;
+  border-radius: 6px;
 }
 
 .Kanji-Box-Hidden {
@@ -262,6 +293,7 @@ html{
   outline: transparent;
   transition: border-color calc(var(--transition, 0.2)* 1s) ease;
   margin: 5px;
+  box-shadow: 2px 2px black;
 }
 
 .Vocab-Input-Button {
@@ -275,6 +307,8 @@ html{
   text-align: center;
   outline: transparent;
   transition: border-color calc(var(--transition, 0.2)* 1s) ease;
+  min-width: 0px;
+  cursor: pointer;
 }
 
 .Vocab-List {
@@ -287,8 +321,8 @@ html{
   background-color:rgba(255, 255, 255, 0.425);
   border-radius: 6px;
   width: calc((var(--vocab-box-width) + 25) * var(--box-count) * 1px);
-  scrollbar-color: rgb(59, 59, 59) rgba(255, 255, 255, 0);
-  scrollbar-width: auto;
+  scrollbar-color: rgb(59, 59, 59) rgba(255, 255, 255, 0.829);
+  scrollbar-width: 100px;
 }
 
 .Game-Over-Dialog {

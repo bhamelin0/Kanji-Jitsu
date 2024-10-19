@@ -1,4 +1,4 @@
-import './kanji-game.css';
+import './css/kanji-game.css';
 import * as React from "react";
 
 function AboutPage() {

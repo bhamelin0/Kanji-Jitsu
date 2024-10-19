@@ -30,7 +30,7 @@ function VocabTyper({enabled, onSubmit}) {
     return (
         <span className="Vocab-Typer">
             <input id={id} disabled={!enabled} className="Vocab-Input" placeholder="Write vocabulary!" value={input} onKeyDown={(e) => handleKeyPress(e)} onInput={e => setInput(e.target.value)}></input>
-            <button className="Vocab-Input-Button" onClick={() => onSubmitHandler(input)} disabled={!enabled}>Submit</button>
+            <button className="Kanji-Game-Button Vocab-Input-Button" onClick={() => onSubmitHandler(input)} disabled={!enabled}>Submit</button>
         </span>
 
     );

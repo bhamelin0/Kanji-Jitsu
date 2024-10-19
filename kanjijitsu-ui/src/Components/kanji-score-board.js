@@ -1,5 +1,5 @@
 import { React } from "react";
-import "../kanji-game.css"
+import '../css/kanji-game.css'
 
 function KanjiScoreBoard({score, matchedVocabCommon, matchedVocabRare, selectedKanjiVocabCommon, selectedKanjiVocabRare}) {
     const matchCountCommon = matchedVocabCommon && Object.keys(matchedVocabCommon).length;
