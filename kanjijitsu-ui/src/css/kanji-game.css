@@ -187,6 +187,12 @@ html{
   align-items: flex-start;
 }
 
+.Kanji-Status {
+  font-size: 20px;
+  margin-bottom: 5px;
+  height: 35px;
+}
+
 .Kanji-Score {
   font-size: 2rem;
 }

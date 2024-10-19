@@ -1,7 +1,7 @@
 import { React, useId, useState } from "react";
 import * as wanakana from 'wanakana';
 
-function VocabTyper({enabled, onSubmit}) {
+function VocabTyper({kanji, enabled, onSubmit}) {
     const id = useId();
     const [input, setInput] = useState('');
     const [bound, setBound] = useState(false);
@@ -9,7 +9,6 @@ function VocabTyper({enabled, onSubmit}) {
 
     if(input && !bound) {
         wanakana.bind(inputElem);
-        console.log("bound!");
         setBound(true);
     }
 
@@ -29,7 +28,7 @@ function VocabTyper({enabled, onSubmit}) {
 
     return (
         <span className="Vocab-Typer">
-            <input id={id} disabled={!enabled} className="Vocab-Input" placeholder="Write vocabulary!" value={input} onKeyDown={(e) => handleKeyPress(e)} onInput={e => setInput(e.target.value)}></input>
+            <input id={id} disabled={!enabled} className="Vocab-Input" placeholder={`Write vocabulary using the kanji ${kanji}!`} value={input} onKeyDown={(e) => handleKeyPress(e)} onInput={e => setInput(e.target.value)}></input>
             <button className="Kanji-Game-Button Vocab-Input-Button" onClick={() => onSubmitHandler(input)} disabled={!enabled}>Submit</button>
         </span>
 
