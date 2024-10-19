@@ -3,6 +3,6 @@
     src: url(../fonts/BIZUDMincho-Bold.woff2) format("woff2");
   }
 
-.kanji {
+  .kanji {
     font-family: "Kanji-Fancy", Verdana, Tahoma;
-}
+  }

@@ -1,5 +1,5 @@
 import { React, useEffect, useRef  } from "react";
-import "../kanji-game.css"
+import '../css/kanji-game.css'
 
 
 function VocabTile({vocab, kanji, hidden, showGloss, showAll}) {
@@ -56,7 +56,7 @@ function VocabTile({vocab, kanji, hidden, showGloss, showAll}) {
     function renderHidden() {
         return ( 
             <div>
-                <div className={showGloss ? 'Vocab-Box-Kanji-Hidden' : `Vocab-Box-Kanji-Hidden-Full`} style={kanjiStyle}>
+                <div className={`no-select ${showGloss ? 'Vocab-Box-Kanji-Hidden' : 'Vocab-Box-Kanji-Hidden-Full'}`} style={kanjiStyle}>
                     {kanji}
                 </div>
                 { showGloss ? renderGloss() : null }

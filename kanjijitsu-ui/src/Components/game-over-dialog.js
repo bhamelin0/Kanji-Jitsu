@@ -1,6 +1,6 @@
 import { React, useState } from "react";
 import ReactModal from 'react-modal';
-import "../kanji-game.css"
+import '../css/kanji-game.css'
 
 function GameOverDialog({isOpen, score, matchedVocabCommon, matchedVocabRare, selectedKanjiVocabCommon, selectedKanjiVocabRare, onReturnToLevelSelectorClick, onContinueClick, onTryAgainClick}) {
     const [showCopyText, setShowCopyText] = useState(false);
@@ -9,7 +9,7 @@ function GameOverDialog({isOpen, score, matchedVocabCommon, matchedVocabRare, se
     const matchCountRare = matchedVocabRare && Object.keys(matchedVocabRare).length;
 
     return (
-        <ReactModal className="Game-Over-Dialog" isOpen={isOpen}>
+        <ReactModal appElement={document.getElementById('root') || undefined} className="Game-Over-Dialog" isOpen={isOpen}>
             <div className="Game-Over-Container">
                 <div>
                     Game Over!
@@ -29,9 +29,9 @@ function GameOverDialog({isOpen, score, matchedVocabCommon, matchedVocabRare, se
               
             </div>
             <div className="Game-Over-Buttons">
-                    <button className="Kanji-Game-Button" onClick={() => onContinueClick()}>Return</button> 
+                    <button className="Kanji-Game-Button" onClick={() => onContinueClick()}>Close and review</button> 
                     <button className="Kanji-Game-Button" onClick={() => onTryAgainClick()}>Reset and try again</button> 
-                    <button className="Kanji-Game-Button" onClick={() => onReturnToLevelSelectorClick()}>Return to Kanji Selection</button>
+                    <button className="Kanji-Game-Button" onClick={() => onReturnToLevelSelectorClick()}>Return to kanji selection page</button>
                 </div>
         </ReactModal>
 

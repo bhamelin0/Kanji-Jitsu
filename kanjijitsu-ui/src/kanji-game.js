@@ -1,4 +1,4 @@
-import './kanji-game.css';
+import './css/kanji-game.css';
 import { getDailyKanjiRoute, getDailyVocabRoute } from './Library/fetchEnv.js';
 import React, { useState, useEffect, useRef } from "react";
 import CrossSign from './Components/cross-sign';
@@ -18,6 +18,7 @@ function KanjiGame() {
     const [selectedKanjiVocabCommon, setSelectedKanjiVocabCommon] = useState([]); // List of common valid Kanji inputs
     const [selectedKanjiVocabRare, setSelectedKanjiVocabRare] = useState([]); // List of rare valid Vocab inputs
     const [failedReadings, setFailedReadings] = useState([]); // 1 displays selected Kanji, 2 is end screen
+    const [statusField, setStatusField] = useState(""); // 1 displays selected Kanji, 2 is end screen
 
     const [points, setPoints] = useState(0);
     const [attemptedReadings, setAttemptedReadings] = useState({});
@@ -57,15 +58,18 @@ function KanjiGame() {
     }, []);
 
     async function handleKanjiTileClick(kanji) {
+        if(selectedKanji) { 
+            return; 
+        }
+
         setGameStage(1);
-        console.log("Clicked Kanji " + kanji.Kanji + " Level " + kanji.N_level);
         setSelectedKanji(kanji)
+        setStatusField(`Try to type as many vocab readings using ${kanji.Kanji} as you can. Aim for 20!`)
 
         try {
             const res = await fetch(getDailyVocabRoute(kanji.Kanji));
             const vocabJson = await res.json();
             const vocabEntries = vocabJson.VocabCollection;
-            console.log(vocabEntries);
             setSelectedKanjiVocabCommon(vocabEntries.filter(entry => entry.Common === true))
             setSelectedKanjiVocabRare(vocabEntries.filter(entry => entry.Common === false))
         } catch (err) {
@@ -75,7 +79,7 @@ function KanjiGame() {
 
     function handleVocabAttempt(e) {
         if(attemptedReadings[e]) {
-            // TODO move to tile if any, display 'already used' message
+            setStatusField(`'${e}' has already been used.`);
         } else {
             const commonEntryWords = selectedKanjiVocabCommon.filter(entry => entry.Readings.includes(e) === true);
             const rareEntryWords = selectedKanjiVocabRare.filter(entry => entry.Readings.includes(e) === true);
@@ -84,13 +88,15 @@ function KanjiGame() {
             const newMatchedVocabRare = {};
             if(newPoints === 0) {
                 if(failedReadings.length === 2) {
+                    setStatusField(`'${e}' is not a reading for any vocab of ${selectedKanji.Kanji}. No attempts remaining!`);
                     handleGameOver();
+                } else {
+                    setStatusField(`'${e}' is not a reading for any vocab of ${selectedKanji.Kanji}.`);
                 }
                 setFailedReadings([...failedReadings, e]);
-
             } else {
                 setPoints(points + newPoints);
-
+                setStatusField(`'${e}' is a valid reading! for any vocab of ${selectedKanji.Kanji}.`);
                 commonEntryWords.forEach(element => {
                     newMatchedVocabCommon[element.Vocab_id] = true;
                 });
@@ -110,16 +116,30 @@ function KanjiGame() {
     async function handleGameOver() {
         setGameStage(2);
         setShowAll(true);
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        setGameStage(3); // Game over dialog will open here
+        setGameStage(3); // Game over; Can open dialog
+    }
+
+    async function openDialog() {
+        setGameStage(4); // Game over; Can open dialog
     }
 
     function handleContinueClick() {
-        console.log("test");
-        setGameStage(4); // Close the game over, allow player to return to N level selection
+        setGameStage(3); // Close the game over, allow player to return to N level selection
     }
 
-    function reset() {
+    function resetForKanji() {
+        setFailedReadings([]);
+        setPoints(0);
+        setAttemptedReadings({});
+        setShowGloss(false);
+        setShowAll(false);
+        setMatchedVocabCommon({});
+        setMatchedVocabRare({});
+        setGameStage(1);
+        setStatusField("");
+    }
+
+    function resetForAll() {
         setFailedReadings([]);
         setPoints(0);
         setAttemptedReadings({});
@@ -129,36 +149,28 @@ function KanjiGame() {
         setMatchedVocabRare({});
         setSelectedKanjiVocabCommon([]);
         setSelectedKanjiVocabRare([]);
-    }
-
-    function handleTryAgainClick() {
-        setGameStage(1);
-        reset();
-    }
-
-    function handleReturnToLevelSelectorClick() {
-        setGameStage(0);
         setSelectedKanji(null);
-        reset();
+        setGameStage(0);
+        setStatusField("");
     }
-    
+
     return (
       <div className="App">
         <GameOverDialog 
-            isOpen={gameStage === 3} 
+            isOpen={gameStage === 4} 
             score={points}
             matchedVocabCommon={matchedVocabCommon} 
             matchedVocabRare={matchedVocabRare} 
             selectedKanjiVocabCommon={selectedKanjiVocabCommon} 
             selectedKanjiVocabRare={selectedKanjiVocabRare} 
             onContinueClick={() => handleContinueClick()} 
-            onTryAgainClick={() => handleTryAgainClick()} 
-            onReturnToLevelSelectorClick={() => handleReturnToLevelSelectorClick()}>
+            onTryAgainClick={() => resetForKanji()} 
+            onReturnToLevelSelectorClick={() => resetForAll()}>
         </GameOverDialog>
         <div className="App-Body">
             <div className="App-Toolbar">
                 <div>
-                    <button className="Kanji-Game-Button App-Toolbar-Breadcrumb" hidden={gameStage < 1} onClick={() => handleReturnToLevelSelectorClick()}>Return to Level Select</button>
+                    <button className="Kanji-Game-Button App-Toolbar-Breadcrumb" hidden={gameStage < 1} onClick={() => resetForAll()}>Return to Level Select</button>
                 </div>
                 <div>
           
@@ -166,7 +178,7 @@ function KanjiGame() {
             </div>    
             <header className="App-header">
             <p>
-                Kanji Jitsu!
+                Kanji Jitsu
             </p>
             </header>
             { 
@@ -191,8 +203,11 @@ function KanjiGame() {
                                 <button className="Kanji-Game-Button" onClick={() => setShowGloss(true)} disabled={showGloss || gameStage > 1}>
                                     Show Definitions (-50% score)
                                 </button>
-                                <button className="Kanji-Game-Button" onClick={() => handleGameOver()} disabled={gameStage > 1}>
+                                <button className="Kanji-Game-Button" onClick={() => handleGameOver()} disabled={gameStage > 1} hidden={gameStage >= 3}>
                                     Reveal Answers
+                                </button>
+                                <button className="Kanji-Game-Button" onClick={() => openDialog()} hidden={gameStage < 3}>
+                                    Finish Reviewing
                                 </button>
                             </div>
                             <div className="Kanji-Game-Board-Buttons">
@@ -214,7 +229,8 @@ function KanjiGame() {
                             </KanjiScoreBoard>
                         </div>
                     </div>
-                    <VocabTyper enabled={gameStage < 2} onSubmit={(e) => handleVocabAttempt(e)}></VocabTyper>
+                    <VocabTyper kanji={selectedKanji.Kanji} enabled={gameStage < 2} onSubmit={(e) => handleVocabAttempt(e)}></VocabTyper>
+                    <div className="Kanji-Status">{statusField}</div>
                         <div className="Vocab-List" style={boxCountStyle} {...commonEvents} ref={commonRef}>
                             { selectedKanjiVocabCommon.map((vocab) => 
                                 <VocabTile hidden={!matchedVocabCommon[vocab.Vocab_id]} showGloss={showGloss} showAll={showAll} kanji={selectedKanji.Kanji} vocab={vocab} key={vocab.Vocab_id}/>

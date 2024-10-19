@@ -1,5 +1,5 @@
 import { React } from "react";
-import "./css/cross-sign.css";
+import "../css/cross-sign.css";
 
 function CrossSign({ active }) {
 
