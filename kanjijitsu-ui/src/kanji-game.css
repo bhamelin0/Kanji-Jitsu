@@ -1,16 +1,12 @@
 html{
-  --kanji-box-width: 250;
+  --kanji-box-width: 350;
+  --vocab-box-width: 250;
   --box-count: 8;
 }
 
 .App {
   background-image: url("\\Images\\Shiny Overlay2.svg");
   background-size: cover;
-}
-
-@font-face {
-  font-family: "Kanji-Fancy";
-  src: url(Font/BIZUDMincho-Bold.ttf) format("truetype");
 }
 
 .App-Body {
@@ -127,10 +123,14 @@ html{
   border-color: black;
   border-radius: 6px;
   margin: 10px;
-  font-family: "Kanji-Fancy", Verdana, Tahoma;
+  width: 200px;
   font-size: 120px;
   min-width: 10rem;
   min-height: 10rem;
+}
+
+.Kanji-Box-Hidden {
+  font-family: Verdana, Tahoma;
 }
 
 .Kanji-Box-N1 {
@@ -170,7 +170,7 @@ html{
   border-color: black;
   border-radius: 6px;
   margin: 10px;
-  min-width: calc(1px * var(--kanji-box-width));
+  min-width: calc(1px * var(--vocab-box-width));
   min-height: 15rem;
   display: flex;
   flex-direction: column;
@@ -193,7 +193,6 @@ html{
   margin-top: 20px;
   margin-bottom: 20px;
   min-height:  75px;
-  font-family: "Kanji-Fancy";
   font-size: calc(80px - (4px * var(--wordLength)));
   align-content: center;
 }
@@ -203,7 +202,6 @@ html{
   margin-top: 20px;
   margin-bottom: 20px;
   min-height:  75px;
-  font-family: "Kanji-Fancy";
   font-size: calc(120px - (4px * var(--wordLength)));
   align-content: center;
   height: 100%;
@@ -215,14 +213,12 @@ html{
   margin-top: 20px;
   margin-bottom: 20px;
   min-height:  75px;
-  font-family: "Kanji-Fancy";
   font-size: calc(120px - (4px * var(--wordLength)));
   align-content: center;
   color:rgba(0, 0, 0, 0.692)
 }
 
 .Vocab-Box-Reading {
-  font-family: "Kanji-Fancy";
   font-size: 20px;
   margin: 20px;
 }
@@ -230,7 +226,7 @@ html{
 
 .Vocab-Box-Gloss-Container {
   margin: 10px;
-}
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;}
 
 .Vocab-Box-Gloss {
   font-weight: bold;
@@ -290,7 +286,7 @@ html{
   margin: 10x;
   background-color:rgba(255, 255, 255, 0.425);
   border-radius: 6px;
-  width: calc((var(--kanji-box-width) + 25) * var(--box-count) * 1px);
+  width: calc((var(--vocab-box-width) + 25) * var(--box-count) * 1px);
   scrollbar-color: rgb(59, 59, 59) rgba(255, 255, 255, 0);
   scrollbar-width: auto;
 }

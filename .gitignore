@@ -4,8 +4,12 @@ tmp
 .tmp
 envAWS.json
 envAWS2.json
+Dailytask.exe
+DailyTask.zip
+KanjiServer.exe
+KanjiServer.zip
+
 Lambdatest/LambdaBuilder.bat
-bootstrap
 lambda-handler.zip
 /node_modules
 /kanjijitsu-ui/build

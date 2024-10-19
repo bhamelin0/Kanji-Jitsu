@@ -11,7 +11,7 @@ function KanjiTile({ kanji, showKanji, onClick }) {
         }
     }
     return (
-        <button className={`Kanji-Box Kanji-Box-N${kanji.N_level}`} onClick={handleClick}>
+        <button className={`kanji Kanji-Box ${!showKanji && !tileClicked ? "Kanji-Box-Hidden" : ""} Kanji-Box-N${kanji.N_level}`} onClick={handleClick}>
             {showKanji || tileClicked ? kanji.Kanji : `N${kanji.N_level}`}
         </button>
     );

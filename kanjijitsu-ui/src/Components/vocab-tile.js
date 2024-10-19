@@ -63,42 +63,7 @@ function VocabTile({vocab, kanji, hidden, showGloss, showAll}) {
             </div>
         );
     }
-
-    function renderOld() {
-        return ( <div>
-            { hidden ? 
-                <div>
-                    <div className={showGloss ? 'Vocab-Box-Kanji-Hidden' : `Vocab-Box-Kanji-Hidden-Full`} style={kanjiStyle}>
-                        {kanji}
-                    </div>
-                    { showGloss ? renderGloss() : null }
-                </div>
-            :
-                <div>
-                    <div className="Vocab-Box-Kanji" style={vocabStyle}>
-                        {vocab.Vocab}
-                    </div>
-                    <div className="Vocab-Box-Reading">
-                        { vocab.Readings.join(', ') }
-                    </div>
-
-                    <div className="Vocab-Box-Gloss-Container">
-                        <div className="Vocab-Box-Gloss">
-                            {vocab.Gloss[0]}
-                        </div>
-                        <div className="Vocab-Box-Gloss">
-                            {vocab.Gloss[1]}
-                        </div>
-                        <div className="Vocab-Box-Gloss">
-                            {vocab.Gloss[2]}
-                        </div>
-                    </div>
-                </div>
-            }
-            </div>
-        )
-    }
-
+    
     var innerContent;
     if(showAll || !hidden) {
         innerContent = renderComplete();
@@ -107,7 +72,7 @@ function VocabTile({vocab, kanji, hidden, showGloss, showAll}) {
     }
 
     return (
-        <div ref={ref} className={`Vocab-Box ${hidden ? 'Vocab-Box-Hidden' : vocab.Common ? 'Vocab-Box-Common' : 'Vocab-Box-Rare'}`}>
+        <div ref={ref} className={`kanji Vocab-Box ${hidden ? 'Vocab-Box-Hidden' : vocab.Common ? 'Vocab-Box-Common' : 'Vocab-Box-Rare'}`}>
             {innerContent}
         </div>
     );
