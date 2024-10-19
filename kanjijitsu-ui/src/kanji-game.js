@@ -15,8 +15,8 @@ function KanjiGame() {
     const [kanjiJson, setKanjiJson] = useState([]);
     const [gameStage, setGameStage] = useState(0); // 1 displays selected Kanji, 2 is end screen
     const [selectedKanji, setSelectedKanji] = useState(null); // 1 displays selected Kanji, 2 is end screen
-    const [selectedKanjiVocabCommon, setSelectedKanjiVocabCommon] = useState(null); // List of common valid Kanji inputs
-    const [selectedKanjiVocabRare, setSelectedKanjiVocabRare] = useState(null); // List of rare valid Vocab inputs
+    const [selectedKanjiVocabCommon, setSelectedKanjiVocabCommon] = useState([]); // List of common valid Kanji inputs
+    const [selectedKanjiVocabRare, setSelectedKanjiVocabRare] = useState([]); // List of rare valid Vocab inputs
     const [failedReadings, setFailedReadings] = useState([]); // 1 displays selected Kanji, 2 is end screen
 
     const [points, setPoints] = useState(0);
@@ -40,7 +40,6 @@ function KanjiGame() {
                 const res = await fetch(getDailyKanjiRoute());
                 const kanjiJson = await res.json();
                 setKanjiJson(kanjiJson)
-                console.log(kanjiJson)
             } catch (err) {
                console.log(err)
             }
@@ -126,8 +125,10 @@ function KanjiGame() {
         setAttemptedReadings({});
         setShowGloss(false);
         setShowAll(false);
-        setMatchedVocabCommon({})
-        setMatchedVocabRare({})
+        setMatchedVocabCommon({});
+        setMatchedVocabRare({});
+        setSelectedKanjiVocabCommon([]);
+        setSelectedKanjiVocabRare([]);
     }
 
     function handleTryAgainClick() {
@@ -160,7 +161,7 @@ function KanjiGame() {
                     <button className="Kanji-Game-Button App-Toolbar-Breadcrumb" hidden={gameStage < 1} onClick={() => handleReturnToLevelSelectorClick()}>Return to Level Select</button>
                 </div>
                 <div>
-                    <LangToggle/>
+          
                 </div>
             </div>    
             <header className="App-header">
@@ -169,21 +170,19 @@ function KanjiGame() {
             </p>
             </header>
             { 
-                !selectedKanji && gameStage == 0 ? 
+                kanjiJson.length === 0 ? 
+                    <Loader/>
+                : (!selectedKanji || selectedKanjiVocabCommon.length === 0) && gameStage < 2 ? 
                     <div>
                         <div className = "Kanji-Selector-Subtitle">What level of Kanji do you want to practice?</div>
                         <div className="Kanji-Selector">
                         { kanjiJson.map((kanji) => 
                             <KanjiTile key={kanji.Kanji_id} kanji={kanji} onClick={() => handleKanjiTileClick(kanji)} />
-
                         )}
                         </div>
+                        { gameStage == 1 ? <Loader/> : null }
                     </div>
-
                     
-                : !selectedKanjiVocabCommon && gameStage == 1 ? (
-                    <Loader/>
-                )
                 :
                 <div className="Kanji-Game-Stage-1">
                     <div className="Kanji-Game-Board">
@@ -201,8 +200,6 @@ function KanjiGame() {
                                 <CrossSign active={ failedReadings.length > 1 }/>
                                 <CrossSign active={ failedReadings.length > 2 }/>
                             </div>
-
-
                         </div>
                         <div className="Kanji-Game-Board-Tile">
                             <KanjiTile key={selectedKanji.Kanji_id} kanji={selectedKanji} showKanji />

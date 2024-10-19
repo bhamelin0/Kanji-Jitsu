@@ -11,6 +11,11 @@
 # production
 /build
 /kanjijitsu-ui/build
+/kanjijitsu-ui/kanjijitsu-ui/build
+DailyTask.exe
+DailyTask.zip
+KanjiServer.exe
+Kanjiserver.zip
 
 # misc
 .DS_Store
@@ -22,3 +27,4 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+

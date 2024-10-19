@@ -1,0 +1,8 @@
+@font-face {
+    font-family: "Kanji-Fancy";
+    src: url(../fonts/BIZUDMincho-Bold.woff2) format("woff2");
+  }
+
+.kanji {
+    font-family: "Kanji-Fancy", Verdana, Tahoma;
+}
