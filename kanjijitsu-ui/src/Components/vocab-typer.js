@@ -17,6 +17,7 @@ function VocabTyper({kanji, enabled, onSubmit}) {
     }
 
     function onSubmitHandler(input) {
+        input = input.trim();
         setTooltipText("")
         if(!wanakana.isKana(input)) {
             setTooltipText("Please ensure the input is entirely hiragana/katakana.");
