@@ -24,7 +24,7 @@ function GameOverDialog({isOpen, score, matchedVocabCommon, matchedVocabRare, se
                         <li>Rare Words: {matchCountRare} / {selectedKanjiVocabRare?.length}</li>
                     </ul>
                 </div>
-                <button className="Kanji-Game-Button" onClick={() => setShowCopyText(true)}>Copy Score</button>
+                <button hidden className="Kanji-Game-Button" onClick={() => setShowCopyText(true)}>Copy Score</button>
                 <div className="Kanji-Game-Subtext">{showCopyText ? "Score copied! You can share it with your friends by pasting into any emoji friendly software or site, like Slack or discord!" : null }</div>
               
             </div>

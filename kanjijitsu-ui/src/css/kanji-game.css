@@ -9,6 +9,9 @@ html{
   background-size: cover;
 }
 
+.App-Error {
+  font-size: 25px;
+}
 .App-Body {
   text-align: center;
   min-height: 100vh;
@@ -25,7 +28,7 @@ html{
 }
 
 .App-Toolbar-Breadcrumb {
-  font: 20px;
+  font-size: 20px;
   margin: 10px;
 }
 
@@ -85,7 +88,6 @@ html{
 .Kanji-Game-Button {
   --border-width: 3;
   padding: 12px 20px;
-  font-size: 1rem;
   border-width: calc(var(--border-width)* 1px);
   border-style: solid;
   border-color: black;
@@ -93,7 +95,6 @@ html{
   text-align: center;
   outline: transparent;
   transition: border-color calc(var(--transition, 0.2)* 1s) ease;
-  font-size: 1rem;
   color: black;
   margin-right: 10px;
   margin-bottom: 10px;
@@ -105,7 +106,7 @@ html{
 }
 
 .Kanji-Game-Button:hover {
-  box-shadow: 2px 2px 0px 3px black;
+  box-shadow: 2px 2px 0px 2px black;
   border-radius: 6px;
 }
 
@@ -156,7 +157,7 @@ html{
 }
 
 .Kanji-Box-Hover:hover {
-  box-shadow: 3px 3px 0px 5px black;
+  box-shadow: 3px 3px 0px 4px black;
   border-radius: 6px;
 }
 
@@ -334,13 +335,13 @@ html{
 .Game-Over-Dialog {
   position: absolute;
   inset: 40px;
-  border: 1px solid rgb(204, 204, 204);
+  border: 2px solid rgb(122, 122, 122);
   border-radius: 10px;
-  background: rgb(255, 255, 255);
+  background: rgb(187, 199, 231);
   overflow: auto;
   outline: none;
   padding: 20px;
-  height:50%;
+  height: fit-content;
   width: 50%;
   top: 25%;
   left: 25%;

@@ -1,10 +1,10 @@
 import './css/kanji-game.css';
 import { getDailyKanjiRoute, getDailyVocabRoute } from './Library/fetchEnv.js';
+import { Link, useRouteError } from "react-router-dom";
 import React, { useState, useEffect, useRef } from "react";
 import CrossSign from './Components/cross-sign';
 import KanjiTile from './Components/kanji-tile';
 import VocabTyper from './Components/vocab-typer';
-import LangToggle from './Components/lang-toggle';
 import Loader from './Components/loader';
 import VocabTile from './Components/vocab-tile';
 import KanjiScoreBoard from './Components/kanji-score-board';
@@ -96,11 +96,10 @@ function KanjiGame() {
                 setFailedReadings([...failedReadings, e]);
             } else {
                 setPoints(points + newPoints);
-                setStatusField(`'${e}' is a valid reading! for any vocab of ${selectedKanji.Kanji}.`);
+                setStatusField(`'${e}' is a valid reading. +${newPoints} score!`);
                 commonEntryWords.forEach(element => {
                     newMatchedVocabCommon[element.Vocab_id] = true;
                 });
-
 
                 rareEntryWords.forEach(element => {
                     newMatchedVocabRare[element.Vocab_id] = true;
@@ -170,7 +169,8 @@ function KanjiGame() {
         <div className="App-Body">
             <div className="App-Toolbar">
                 <div>
-                    <button className="Kanji-Game-Button App-Toolbar-Breadcrumb" hidden={gameStage < 1} onClick={() => resetForAll()}>Return to Level Select</button>
+                    <Link className="App-Toolbar-Breadcrumb" hidden={gameStage < 1} onClick={() => resetForAll()}>Return to Level Select</Link>
+                    <Link className="App-Toolbar-Breadcrumb" to={"/about"}>About</Link>
                 </div>
                 <div>
           
@@ -186,15 +186,15 @@ function KanjiGame() {
                     <Loader/>
                 : (!selectedKanji || selectedKanjiVocabCommon.length === 0) && gameStage < 2 ? 
                     <div>
-                        <div className = "Kanji-Selector-Subtitle">What level of Kanji do you want to practice?</div>
+                        <div className = "Kanji-Selector-Subtitle">Which level of Kanji do you want to practice today?</div>
                         <div className="Kanji-Selector">
                         { kanjiJson.map((kanji) => 
                             <KanjiTile key={kanji.Kanji_id} kanji={kanji} onClick={() => handleKanjiTileClick(kanji)} />
                         )}
                         </div>
+                        <div className = "Kanji-Selector-Subtitle">Set of kanji rotates every day at 12AM JST.</div>
                         { gameStage == 1 ? <Loader/> : null }
                     </div>
-                    
                 :
                 <div className="Kanji-Game-Stage-1">
                     <div className="Kanji-Game-Board">
