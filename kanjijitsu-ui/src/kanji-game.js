@@ -1,6 +1,6 @@
 import './css/kanji-game.css';
 import { getDailyKanjiRoute, getDailyVocabRoute } from './Library/fetchEnv.js';
-import { Link, useRouteError } from "react-router-dom";
+import { Link } from "react-router-dom";
 import React, { useState, useEffect, useRef } from "react";
 import CrossSign from './Components/cross-sign';
 import KanjiTile from './Components/kanji-tile';
@@ -27,7 +27,7 @@ function KanjiGame() {
 
     const [showGloss, setShowGloss] = useState(false);
     const [showAll, setShowAll] = useState(false);
-    const [boxCountStyle, setBoxCountStyle] = useState({ "--box-count": Math.floor((window.innerWidth * .9) / 250) - 1 });
+    const [boxCountStyle, setBoxCountStyle] = useState({ "--box-count": Math.max(Math.floor((window.innerWidth * .9) / 250) - 1, 1) });
 
     // Scroll Dragging
     const commonRef = useRef(); // We will use React useRef hook to reference the wrapping div:
@@ -51,7 +51,7 @@ function KanjiGame() {
 
     useEffect(() => {
         const handleResize = () => {
-            setBoxCountStyle({ "--box-count": Math.floor((window.innerWidth * .9) / 250) - 1 });
+            setBoxCountStyle({ "--box-count": Math.max(Math.floor((window.innerWidth * .9) / 250) - 1, 1) });
         }
         window.addEventListener('resize', handleResize);
         return () => { window.removeEventListener('resize', handleResize); };
@@ -177,9 +177,9 @@ function KanjiGame() {
                 </div>
             </div>    
             <header className="App-header">
-            <p>
-                Kanji Jitsu
-            </p>
+                <p className="App-header-p">
+                    Kanji Jitsu
+                </p>
             </header>
             { 
                 kanjiJson.length === 0 ? 

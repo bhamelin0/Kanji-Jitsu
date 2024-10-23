@@ -30,7 +30,7 @@ function VocabTile({vocab, kanji, hidden, showGloss, showAll}) {
 
     function renderComplete() {
         return ( 
-            <div>
+            <>
                 <div className="Vocab-Box-Kanji" style={vocabStyle}>
                     {vocab.Vocab}
                 </div>
@@ -39,17 +39,17 @@ function VocabTile({vocab, kanji, hidden, showGloss, showAll}) {
                 </div>
 
                 <div className="Vocab-Box-Gloss-Container">
-                    <div className="Vocab-Box-Gloss">
+                    <div>
                         {vocab.Gloss[0]}
                     </div>
-                    <div className="Vocab-Box-Gloss">
+                    <div>
                         {vocab.Gloss[1]}
                     </div>
-                    <div className="Vocab-Box-Gloss">
+                    <div>
                         {vocab.Gloss[2]}
                     </div>
                 </div>
-            </div>
+            </>
         );
     }
 
