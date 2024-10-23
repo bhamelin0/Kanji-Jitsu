@@ -49,6 +49,7 @@ html{
 
 .App-header-p {
   height: 18px;
+  margin-top: 30px;
 }
 
 .App-link {
@@ -191,10 +192,10 @@ html{
   border-radius: 6px;
   margin: 1vw;
   width: 200px;
-  max-width: 200px;
+  max-width: 150px;
   height: calc(1em + 15vw);
-  max-height: 200px;
-  font-size: calc(12vw - 10px);
+  max-height: 150px;
+  font-size: calc(9vw - 5px);
   box-shadow: 5px 5px black;
   cursor: pointer;
   flex-grow: 1;
@@ -202,7 +203,7 @@ html{
 
 @media screen and (min-width: 1000px) {
   .Kanji-Box {
-    font-size: 120px;
+    font-size: 80px;
   }
 }
 
