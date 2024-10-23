@@ -52,6 +52,13 @@ html{
   margin-top: 30px;
 }
 
+.App-header-hidden {
+  visibility: hidden;
+  height: 0px;
+  padding:0px;
+  margin-top:0px;
+}
+
 .App-link {
   color: #61dafb;
 }

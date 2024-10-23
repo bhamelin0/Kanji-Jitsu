@@ -177,7 +177,7 @@ function KanjiGame() {
                 </div>
             </div>    
             <header className="App-header">
-                <p className="App-header-p">
+                <p className={`${gameStage > 0 && selectedKanjiVocabCommon.length !== 0 ? 'App-header-hidden' : 'App-header-p'}`}>
                     Kanji Jitsu
                 </p>
             </header>
