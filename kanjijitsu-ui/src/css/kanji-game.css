@@ -1,5 +1,4 @@
 html{
-  --kanji-box-width: 350;
   --vocab-box-width: 250;
   --box-count: 8;
 }
@@ -43,14 +42,21 @@ html{
   }
 }
 
-.Kanji-Selector-Subtitle{
-  font-size: 30px;
-  color: black;
-}
-
 .App-header {
   font-size: calc(20px + 2vmin);
   color: black;
+}
+
+.App-header-p {
+  height: 18px;
+  margin-top: 30px;
+}
+
+.App-header-hidden {
+  visibility: hidden;
+  height: 0px;
+  padding:0px;
+  margin-top:0px;
 }
 
 .App-link {
@@ -66,10 +72,23 @@ html{
 
 .Kanji-Selector {
   display: flex;
-  width: 100%;
+  width: 95vw;
   justify-content: center;
   flex-direction: row-reverse;
 }
+
+.Kanji-Selector-Subtitle{
+  font-size: 3vw;
+  color: black;
+}
+
+@media screen and (min-width: 1000px) {
+  .Kanji-Selector-Subtitle {
+    font-size: 30px;
+  }
+}
+
+
 
 .Kanji-Game-Stage-1 {
   display: flex;
@@ -79,12 +98,6 @@ html{
   width:100%;
 }
 
-.Kanji-Game-Board {
-  display: flex;
-  flex-direction: row;
-  width: 100%;
-  justify-content: center;
-}
 .Kanji-Game-Button {
   --border-width: 3;
   padding: 12px 20px;
@@ -98,8 +111,8 @@ html{
   color: black;
   margin-right: 10px;
   margin-bottom: 10px;
-  min-width: 320px;
-  font-size: 20px;
+  min-width: 120px;
+  font-size: calc(1vw + 12px);
   box-shadow: 2px 2px black;
   background-color: rgb(255, 255, 255);
   cursor: pointer;
@@ -119,13 +132,59 @@ html{
   box-shadow: 2px 2px black;
 }
 
-.Kanji-Game-Board-Left {
+@media screen and (min-width: 1000px) {
+  .Kanji-Game-Button {
+    font-size: 30px;
+  }
+}
+
+
+.Kanji-Game-Board {
+  display: flex;
+  flex-direction: column;
   width: 100%;
+  justify-content: center;
+}
+
+@media screen and (min-width: 1000px) {
+  .Kanji-Game-Board {
+    flex-direction: row;
+  }
+}
+
+.Kanji-Game-Board-Left {
+  width: 90%;
   align-items: center;
   display: flex;
   flex-direction: row;
-  justify-content: flex-end;
-  margin: 20px; 
+  
+  justify-content: center;
+  margin-left: 3vw; 
+}
+
+.Kanji-Game-Board-Right {
+  visibility: hidden;
+  width: 0px;
+  height: 0px;
+}
+
+@media screen and (min-width: 1000px) {
+  .Kanji-Game-Board-Left {
+    width: 100%;
+    flex-direction: row;
+    justify-content: flex-end;
+  }
+
+  .Kanji-Game-Board-Right {
+    visibility: visible;
+    width: 100%;
+    height: 100%;
+    align-items:start;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    margin: 20px; 
+  }
 }
 
 .Kanji-Game-Board-Buttons {
@@ -133,27 +192,26 @@ html{
   flex-direction: column;
 }
 
-.Kanji-Game-Board-Right {
-  width: 100%;
-  align-items:start;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  margin: 20px; 
-}
-
 .Kanji-Box {
   border-width: 3px;
   border-style: solid;
   border-color: black;
   border-radius: 6px;
-  margin: 10px;
+  margin: 1vw;
   width: 200px;
-  font-size: 120px;
-  min-width: 10rem;
-  min-height: 10rem;
+  max-width: 150px;
+  height: calc(1em + 15vw);
+  max-height: 150px;
+  font-size: calc(9vw - 5px);
   box-shadow: 5px 5px black;
   cursor: pointer;
+  flex-grow: 1;
+}
+
+@media screen and (min-width: 1000px) {
+  .Kanji-Box {
+    font-size: 80px;
+  }
 }
 
 .Kanji-Box-Hover:hover {
@@ -181,21 +239,33 @@ html{
   background-color: rgb(186, 255, 203);
 }
 
-.Kanji-Score-Board {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: flex-start;
+@media screen and (min-width: 1000px) {
+  .Kanji-Score-Board {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    font-size: 30px;
+  }
 }
 
 .Kanji-Status {
-  font-size: 20px;
-  margin-bottom: 5px;
-  height: 35px;
+  height: 0px;
+  visibility: hidden;
+
+}
+
+@media screen and (min-width: 1000px) {
+  .Kanji-Status {
+    font-size: 20px;
+    margin-bottom: 5px;
+    height: 35px;
+    visibility: visible ;
+  }
 }
 
 .Kanji-Score {
-  font-size: 2rem;
+  font-size: calc(1vw + 12px);
 }
 
 .Kanji-Game-Subtext {
@@ -212,6 +282,7 @@ html{
   min-height: 15rem;
   display: flex;
   flex-direction: column;
+  max-height: 17em;
 }
 
 .Vocab-Box-Hidden {
@@ -228,10 +299,10 @@ html{
 
 .Vocab-Box-Kanji {
   --wordLength: 0;
-  margin-top: 20px;
-  margin-bottom: 20px;
-  min-height:  75px;
-  font-size: calc(80px - (4px * var(--wordLength)));
+  margin-top: 10px;
+  margin-bottom: 10px;
+  min-height:  50px;
+  font-size: calc(70px - (4px * var(--wordLength)));
   align-content: center;
 }
 
@@ -257,17 +328,21 @@ html{
 }
 
 .Vocab-Box-Reading {
-  font-size: 20px;
-  margin: 20px;
+  font-size: 15px;
+  margin: 5px;
+  margin-bottom: 10px;
 }
 
-
 .Vocab-Box-Gloss-Container {
-  margin: 10px;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;}
+  margin: 5px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-height: 100%;
 
-.Vocab-Box-Gloss {
-  font-weight: bold;
+  display: -webkit-box;
+  -webkit-line-clamp: 6; /* Number of lines */
+  -webkit-box-orient: vertical;
 }
 
 .Vocab-Box-Link-Footer {
@@ -288,10 +363,10 @@ html{
 
 .Vocab-Input {
   --border-width: 3;
-  width: 80%;
+  width: 50%;
   max-width: 20rem;
   padding: 12px 20px;
-  font-size: 20px;
+  font-size: calc(1vw + 12px);
   border-width: calc(var(--border-width)* 1px);
   border-style: solid;
   border-color: black;
@@ -306,7 +381,7 @@ html{
 .Vocab-Input-Button {
   --border-width: 3;
   padding: 12px 20px;
-  font-size: 20px;
+  font-size: calc(1vw + 12px);
   border-width: calc(var(--border-width)* 1px);
   border-style: solid;
   border-color: black;
@@ -316,6 +391,16 @@ html{
   transition: border-color calc(var(--transition, 0.2)* 1s) ease;
   min-width: 0px;
   cursor: pointer;
+}
+
+@media screen and (min-width: 1000px) {
+  .Vocab-Input {
+    width: 80%;
+    font-size: 20px;
+  }
+  .Vocab-Input-Button {
+    font-size: 20px;
+  }
 }
 
 .Vocab-List {
@@ -330,21 +415,38 @@ html{
   width: calc((var(--vocab-box-width) + 25) * var(--box-count) * 1px);
   scrollbar-color: rgb(59, 59, 59) rgba(255, 255, 255, 0.829);
   scrollbar-width: 100px;
+  max-height: 20rem;
+}
+
+@media screen and (min-width: 1000px) {
+  .Vocab-List {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    max-width: 90%;
+    overflow-x: auto;
+    margin: 10x;
+    background-color:rgba(255, 255, 255, 0.425);
+    border-radius: 6px;
+    width: calc((var(--vocab-box-width) + 25) * var(--box-count) * 1px);
+    scrollbar-color: rgb(59, 59, 59) rgba(255, 255, 255, 0.829);
+    scrollbar-width: 100px;
+  }
 }
 
 .Game-Over-Dialog {
+  padding: 0px;
+  margin: 0px;
   position: absolute;
-  inset: 40px;
   border: 2px solid rgb(122, 122, 122);
   border-radius: 10px;
   background: rgb(187, 199, 231);
   overflow: auto;
   outline: none;
-  padding: 20px;
   height: fit-content;
-  width: 50%;
-  top: 25%;
-  left: 25%;
+  width:80%;
+  top: 10%;
+  left: 10%;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -355,10 +457,23 @@ html{
   display:flex;
   flex-direction: column;
   justify-content: center;
-  font-size: 30px;
-  margin: 20px;
+  font-size: calc(1vw + 12px);
+  margin: 10px;
   align-items: center;
 }
+@media screen and (min-width: 1000px) {
+  .Game-Over-Dialog {
+    width: 50%;
+    top: 25%;
+    left: 25%;
+  }
+
+  .Game-Over-Container {
+    font-size: 30px;
+    margin: 20px;
+  }
+}
+
 
 .Game-Over-List {
   width: fit-content;
@@ -370,6 +485,7 @@ html{
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
+  margin: 10px;
 }
 
 .switch-container {

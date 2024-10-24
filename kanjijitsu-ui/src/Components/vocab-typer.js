@@ -43,7 +43,7 @@ function VocabTyper({kanji, enabled, onSubmit}) {
     return (
         <span className="Vocab-Typer">
             <Tooltip id="my-tooltip" isOpen={tooltipText.length} variant="dark"/>
-            <input id="vocab-typer-input" disabled={!enabled} className="Vocab-Input" placeholder={`Write vocabulary using the kanji ${kanji}!`} 
+            <input id="vocab-typer-input" disabled={!enabled} className="Vocab-Input" placeholder={`Write vocabulary for ${kanji}!`} 
                 value={input} onKeyDown={(e) => handleKeyPress(e)} onInput={(e) => setInput(e.target.value)} onClick={(e) => handleClick()}
                 data-tooltip-id="my-tooltip" data-tooltip-content={tooltipText} >
             </input>
