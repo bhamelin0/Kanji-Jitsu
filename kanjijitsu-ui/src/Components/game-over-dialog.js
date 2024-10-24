@@ -12,16 +12,13 @@ function GameOverDialog({isOpen, score, matchedVocabCommon, matchedVocabRare, se
         <ReactModal appElement={document.getElementById('root') || undefined} className="Game-Over-Dialog" isOpen={isOpen}>
             <div className="Game-Over-Container">
                 <div>
-                    Game Over!
-                </div>
-                <div>
                     Your Results:
                 </div>
                 <div>
                     <ul className="Game-Over-List">
                         <li>Total Score: {score}</li>
-                        <li>Common Words: {matchCountCommon} / {selectedKanjiVocabCommon?.length}</li>
-                        <li>Rare Words: {matchCountRare} / {selectedKanjiVocabRare?.length}</li>
+                        <li>{matchCountCommon} / {selectedKanjiVocabCommon?.length} Common words</li>
+                        <li>{matchCountRare} / {selectedKanjiVocabRare?.length} Uncommon words</li>
                     </ul>
                 </div>
                 <button hidden className="Kanji-Game-Button" onClick={() => setShowCopyText(true)}>Copy Score</button>

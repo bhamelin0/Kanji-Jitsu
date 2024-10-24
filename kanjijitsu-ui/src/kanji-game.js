@@ -64,7 +64,7 @@ function KanjiGame() {
 
         setGameStage(1);
         setSelectedKanji(kanji)
-        setStatusField(`Try to type as many vocab readings using ${kanji.Kanji} as you can. Aim for 20!`)
+        setStatusField(`Which vocabulary contains kanji ${kanji.Kanji}?`)
 
         try {
             const res = await fetch(getDailyVocabRoute(kanji.Kanji));
@@ -81,8 +81,8 @@ function KanjiGame() {
         if(attemptedReadings[e]) {
             setStatusField(`'${e}' has already been used.`);
         } else {
-            const commonEntryWords = selectedKanjiVocabCommon.filter(entry => entry.Readings.includes(e) === true);
-            const rareEntryWords = selectedKanjiVocabRare.filter(entry => entry.Readings.includes(e) === true);
+            const commonEntryWords = selectedKanjiVocabCommon.filter(entry => entry.Readings.includes(e) === true && matchedVocabCommon[entry.Vocab_id] !== true);
+            const rareEntryWords = selectedKanjiVocabRare.filter(entry => entry.Readings.includes(e) === true && matchedVocabRare[entry.Vocab_id] !== true);
             const newPoints = (commonEntryWords.length * 100 + rareEntryWords.length * 10) / (showGloss ? 2 : 1);
             const newMatchedVocabCommon = {};
             const newMatchedVocabRare = {};
@@ -97,18 +97,34 @@ function KanjiGame() {
             } else {
                 setPoints(points + newPoints);
                 setStatusField(`'${e}' is a valid reading. +${newPoints} score!`);
-                commonEntryWords.forEach(element => {
+                commonEntryWords.forEach((element, index) => {
                     newMatchedVocabCommon[element.Vocab_id] = true;
+
+                    // Swap to front of UI
+                    var leftmostUnmatchedIndex = Object.keys(matchedVocabCommon).length + index;
+                    var matchedIndex = selectedKanjiVocabCommon.findIndex(vocabItem => vocabItem === element);
+                    var swap = selectedKanjiVocabCommon[leftmostUnmatchedIndex];
+                    selectedKanjiVocabCommon[leftmostUnmatchedIndex] = selectedKanjiVocabCommon[matchedIndex];
+                    selectedKanjiVocabCommon[matchedIndex] = swap;
                 });
 
-                rareEntryWords.forEach(element => {
+                rareEntryWords.forEach((element, index) => {
                     newMatchedVocabRare[element.Vocab_id] = true;
+
+                    // Swap to front of UI
+                    var leftmostUnmatchedIndex = Object.keys(matchedVocabRare).length + index;
+                    var matchedIndex = selectedKanjiVocabRare.findIndex(vocabItem => vocabItem === element);
+                    var swap = selectedKanjiVocabRare[leftmostUnmatchedIndex];
+                    selectedKanjiVocabRare[leftmostUnmatchedIndex] = selectedKanjiVocabRare[matchedIndex];
+                    selectedKanjiVocabRare[matchedIndex] = swap;
                 });
             }
             attemptedReadings[e] = true;
             setAttemptedReadings({...attemptedReadings });
             setMatchedVocabCommon({...matchedVocabCommon, ...newMatchedVocabCommon});
             setMatchedVocabRare({...matchedVocabRare, ...newMatchedVocabRare});
+            setSelectedKanjiVocabCommon([...selectedKanjiVocabCommon]);
+            setSelectedKanjiVocabRare([...selectedKanjiVocabRare]);
         }
     }
 
@@ -210,14 +226,14 @@ function KanjiGame() {
                                     Finish Reviewing
                                 </button>
                             </div>
+                        </div>
+                        <div className="Kanji-Game-Board-Tile">
+                            <KanjiTile key={selectedKanji.Kanji_id} kanji={selectedKanji} showKanji />
                             <div className="Kanji-Game-Board-Buttons">
                                 <CrossSign active={ failedReadings.length > 0 }/>
                                 <CrossSign active={ failedReadings.length > 1 }/>
                                 <CrossSign active={ failedReadings.length > 2 }/>
                             </div>
-                        </div>
-                        <div className="Kanji-Game-Board-Tile">
-                            <KanjiTile key={selectedKanji.Kanji_id} kanji={selectedKanji} showKanji />
                         </div>
                         <div className="Kanji-Game-Board-Right">
                             <KanjiScoreBoard 

@@ -109,7 +109,6 @@ html{
   outline: transparent;
   transition: border-color calc(var(--transition, 0.2)* 1s) ease;
   color: black;
-  margin-right: 10px;
   margin-bottom: 10px;
   min-width: 120px;
   font-size: calc(1vw + 12px);
@@ -134,15 +133,20 @@ html{
 
 @media screen and (min-width: 1000px) {
   .Kanji-Game-Button {
-    font-size: 30px;
+    font-size: 20px;
   }
 }
-
 
 .Kanji-Game-Board {
   display: flex;
   flex-direction: column;
   width: 100%;
+  justify-content: center;
+}
+
+.Kanji-Game-Board-Tile {
+  display:flex;
+  align-items: center;
   justify-content: center;
 }
 
@@ -245,7 +249,6 @@ html{
     flex-direction: column;
     justify-content: center;
     align-items: flex-start;
-    font-size: 30px;
   }
 }
 
@@ -265,7 +268,7 @@ html{
 }
 
 .Kanji-Score {
-  font-size: calc(1vw + 12px);
+  font-size: 30px;
 }
 
 .Kanji-Game-Subtext {
