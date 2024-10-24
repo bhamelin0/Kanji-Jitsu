@@ -12,7 +12,7 @@ function KanjiScoreBoard({score, matchedVocabCommon, matchedVocabRare, selectedK
                 Score: {score}
             </div>
             <div className="Kanji-Score">
-                {matchCountCommon}/20 common ({totalCommon} total)
+                {matchCountCommon}/{totalCommon} common
             </div>
             <div className="Kanji-Score">
                 {matchCountRare}/{totalRare} uncommon
