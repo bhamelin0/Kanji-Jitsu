@@ -1,4 +1,4 @@
-import { React, useLayoutEffect, useState } from "react";
+import { React, useEffect, useState } from "react";
 import { Tooltip } from 'react-tooltip'
 import 'react-tooltip/dist/react-tooltip.css'
 import * as wanakana from 'wanakana';
@@ -9,6 +9,15 @@ function VocabTyper({kanji, enabled, onSubmit}) {
     const [bound, setBound] = useState(false);
     const [tooltipText, setTooltipText] = useState('');
     const inputElem = document.getElementById("vocab-typer-input");
+
+    useEffect(() => {
+        function handleKeyPress(e) {
+            var inputElem = document.getElementById("vocab-typer-input");
+            inputElem?.focus();
+        }
+        document.addEventListener('keypress', handleKeyPress);
+        return () => { document.removeEventListener('keypress', handleKeyPress); }
+    }, []);
 
     if(inputElem && !bound) {
         wanakana.bind(inputElem);

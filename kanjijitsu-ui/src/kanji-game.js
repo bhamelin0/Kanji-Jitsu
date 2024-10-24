@@ -55,6 +55,8 @@ function KanjiGame() {
         }
         window.addEventListener('resize', handleResize);
         return () => { window.removeEventListener('resize', handleResize); };
+
+
     }, []);
 
     async function handleKanjiTileClick(kanji) {
