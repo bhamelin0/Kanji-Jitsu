@@ -83,12 +83,11 @@ function KanjiGame() {
         if(attemptedReadings[e]) {
             setStatusField(`'${e}' has already been used.`);
         } else {
-            const commonEntryWords = selectedKanjiVocabCommon.filter(entry => entry.Readings.includes(e) === true && matchedVocabCommon[entry.Vocab_id] !== true);
-            const rareEntryWords = selectedKanjiVocabRare.filter(entry => entry.Readings.includes(e) === true && matchedVocabRare[entry.Vocab_id] !== true);
-            const newPoints = (commonEntryWords.length * 100 + rareEntryWords.length * 10) / (showGloss ? 2 : 1);
+            var commonEntryWords = selectedKanjiVocabCommon.filter(entry => entry.Readings.includes(e) === true);
+            var rareEntryWords = selectedKanjiVocabRare.filter(entry => entry.Readings.includes(e) === true);
             const newMatchedVocabCommon = {};
             const newMatchedVocabRare = {};
-            if(newPoints === 0) {
+            if(commonEntryWords.length === 0 && rareEntryWords.length === 0) {
                 if(failedReadings.length === 2) {
                     setStatusField(`'${e}' is not a reading for any vocab of ${selectedKanji.Kanji}. No attempts remaining!`);
                     handleGameOver();
@@ -97,8 +96,17 @@ function KanjiGame() {
                 }
                 setFailedReadings([...failedReadings, e]);
             } else {
-                setPoints(points + newPoints);
-                setStatusField(`'${e}' is a valid reading. +${newPoints} score!`);
+                // Filter away any additional readings for vocab we already succeeded with
+                commonEntryWords = commonEntryWords.filter(entry => matchedVocabCommon[entry.Vocab_id] !== true)
+                rareEntryWords = rareEntryWords.filter(entry => matchedVocabRare[entry.Vocab_id] !== true)
+                if(commonEntryWords.length === 0 && rareEntryWords.length === 0) {
+                    setStatusField(`'${e}' is a new valid reading, but reveals no new kanji.`);
+                } else {
+                    const newPoints = (commonEntryWords.length * 100 + rareEntryWords.length * 10) / (showGloss ? 2 : 1);
+                    setPoints(points + newPoints);
+                    setStatusField(`'${e}' is a valid reading. +${newPoints} score!`);
+                }
+                
                 commonEntryWords.forEach((element, index) => {
                     newMatchedVocabCommon[element.Vocab_id] = true;
 
