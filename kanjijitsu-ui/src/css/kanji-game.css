@@ -381,6 +381,38 @@ html{
   box-shadow: 2px 2px black;
 }
 
+.Kanji-Input {
+  --border-width: 3;
+  width: 20px;
+  max-width: 20rem;
+  padding: 12px 20px;
+  font-size: calc(1vw + 12px);
+  border-width: calc(var(--border-width)* 1px);
+  border-style: solid;
+  border-color: black;
+  border-radius: 6px;
+  text-align: center;
+  outline: transparent;
+  transition: border-color calc(var(--transition, 0.2)* 1s) ease;
+  margin: 5px;
+  box-shadow: 2px 2px black;
+}
+
+.Kanji-Input-Button {
+  --border-width: 3;
+  padding: 12px 20px;
+  font-size: calc(1vw + 12px);
+  border-width: calc(var(--border-width)* 1px);
+  border-style: solid;
+  border-color: black;
+  border-radius: 6px;
+  text-align: center;
+  outline: transparent;
+  transition: border-color calc(var(--transition, 0.2)* 1s) ease;
+  min-width: 0px;
+  cursor: pointer;
+}
+
 .Vocab-Input-Button {
   --border-width: 3;
   padding: 12px 20px;
