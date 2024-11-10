@@ -1,6 +1,7 @@
 import './css/kanji-game.css';
 import { getDailyKanjiRoute, getDailyVocabRoute } from './Library/fetchEnv.js';
 import { Link } from "react-router-dom";
+import { Tooltip } from 'react-tooltip'
 import React, { useState, useEffect, useRef } from "react";
 import CrossSign from './Components/cross-sign';
 import KanjiTile from './Components/kanji-tile';
@@ -10,6 +11,7 @@ import VocabTile from './Components/vocab-tile';
 import KanjiScoreBoard from './Components/kanji-score-board';
 import GameOverDialog from './Components/game-over-dialog';
 import { useDraggable } from "react-use-draggable-scroll-safe";
+import * as wanakana from 'wanakana';
 
 function KanjiGame() {
     const [kanjiJson, setKanjiJson] = useState([]);
@@ -19,6 +21,9 @@ function KanjiGame() {
     const [selectedKanjiVocabRare, setSelectedKanjiVocabRare] = useState([]); // List of rare valid Vocab inputs
     const [failedReadings, setFailedReadings] = useState([]); // 1 displays selected Kanji, 2 is end screen
     const [statusField, setStatusField] = useState(""); // 1 displays selected Kanji, 2 is end screen
+
+    const [kanjiTooltipText, setKanjiTooltipText] = useState('');
+    const [customKanjiInput, setCustomKanjiInput] = useState('');
 
     const [points, setPoints] = useState(0);
     const [attemptedReadings, setAttemptedReadings] = useState({});
@@ -59,24 +64,51 @@ function KanjiGame() {
 
     }, []);
 
+    function handleCustomKanjiInput(input) {
+        setKanjiTooltipText("");
+        if(input && !wanakana.isKanji(input)) {
+            setKanjiTooltipText("Please ensure the input is Kanji.");
+        } else {
+            setCustomKanjiInput(input);
+        }
+    }
+
+    function handleCustomKanjiEnter() {
+        handleKanjiTileClick({ Kanji: customKanjiInput });
+    }
+
+    function handleCustomKanjiKeyPress(e) {
+        if(e.key !== 'Enter') {
+            return;
+        }
+        handleKanjiTileClick({Kanji: customKanjiInput});
+    }
+
     async function handleKanjiTileClick(kanji) {
         if(selectedKanji) { 
             return; 
         }
 
         setGameStage(1);
-        setSelectedKanji(kanji)
-        setStatusField(`Which vocabulary contains kanji ${kanji.Kanji}?`)
 
         try {
             const res = await fetch(getDailyVocabRoute(kanji.Kanji));
             const vocabJson = await res.json();
             const vocabEntries = vocabJson.VocabCollection;
+            if(vocabEntries === null) {
+                setKanjiTooltipText("Not a JLPT Kanji / No Vocabulary set available. Sorry!");
+                setGameStage(0);
+                return;
+            }
             setSelectedKanjiVocabCommon(vocabEntries.filter(entry => entry.Common === true))
             setSelectedKanjiVocabRare(vocabEntries.filter(entry => entry.Common === false))
         } catch (err) {
            console.log(err)
         }
+
+        setGameStage(1);
+        setSelectedKanji(kanji)
+        setStatusField(`Which vocabulary contains kanji ${kanji.Kanji}?`)
     }
 
     function handleVocabAttempt(e) {
@@ -219,6 +251,17 @@ function KanjiGame() {
                         )}
                         </div>
                         <div className = "Kanji-Selector-Subtitle">Set of kanji rotates every day at 12AM JST.</div>
+                        
+                        <div>
+                            <span className="Kanji-Selector-Subtitle">Or, practice a specific JLPT Kanji: </span>
+                            <Tooltip id="my-tooltip" isOpen={kanjiTooltipText.length} variant="dark"/>
+                            <input className="Kanji-Input"  
+                                value={customKanjiInput} maxLength="1" onInput={(e) => handleCustomKanjiInput(e.target.value)} onKeyDown={(e) => handleCustomKanjiKeyPress(e)}
+                                data-tooltip-id="my-tooltip" data-tooltip-content={kanjiTooltipText}>
+                            </input>
+                            <button className="Kanji-Game-Button Kanji-Input-Button" onClick={() => handleCustomKanjiEnter()}>Submit</button>
+                        </div>
+
                         { gameStage == 1 ? <Loader/> : null }
                     </div>
                 :
