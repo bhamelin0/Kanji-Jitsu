@@ -383,7 +383,7 @@ html{
 
 .Kanji-Input {
   --border-width: 3;
-  width: 40px;
+  width: 80px;
   max-width: 20rem;
   padding: 12px 20px;
   font-size: calc(1vw + 12px);

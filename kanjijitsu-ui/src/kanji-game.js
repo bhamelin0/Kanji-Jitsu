@@ -66,14 +66,20 @@ function KanjiGame() {
 
     function handleCustomKanjiInput(input) {
         setKanjiTooltipText("");
-        if(input && !wanakana.isKanji(input)) {
-            setKanjiTooltipText("Please ensure the input is Kanji.");
-        } else {
-            setCustomKanjiInput(input);
-        }
+        setCustomKanjiInput(input);
     }
 
     function handleCustomKanjiEnter() {
+        if(customKanjiInput && !wanakana.isKanji(customKanjiInput)) {
+            setKanjiTooltipText("Please ensure the input is Kanji.");
+            return;
+        }
+
+        if(customKanjiInput.length > 1) {
+            setKanjiTooltipText("Please enter only one single kanji.");
+            return;
+        }
+
         handleKanjiTileClick({ Kanji: customKanjiInput });
     }
 
@@ -81,6 +87,16 @@ function KanjiGame() {
         if(e.key !== 'Enter') {
             return;
         }
+        if(customKanjiInput && !wanakana.isKanji(customKanjiInput)) {
+            setKanjiTooltipText("Please ensure the input is Kanji.");
+            return;
+        }
+
+        if(customKanjiInput.length > 1) {
+            setKanjiTooltipText("Please enter only one single kanji.");
+            return;
+        }
+
         handleKanjiTileClick({Kanji: customKanjiInput});
     }
 
@@ -256,7 +272,7 @@ function KanjiGame() {
                             <span className="Kanji-Selector-Subtitle">Or, practice a specific JLPT Kanji: </span>
                             <Tooltip id="my-tooltip" isOpen={kanjiTooltipText.length} variant="dark"/>
                             <input className="Kanji-Input"  
-                                value={customKanjiInput} maxLength="1" onInput={(e) => handleCustomKanjiInput(e.target.value)} onKeyDown={(e) => handleCustomKanjiKeyPress(e)}
+                                value={customKanjiInput} onInput={(e) => handleCustomKanjiInput(e.target.value)} onKeyDown={(e) => handleCustomKanjiKeyPress(e)}
                                 data-tooltip-id="my-tooltip" data-tooltip-content={kanjiTooltipText}>
                             </input>
                             <button className="Kanji-Game-Button Kanji-Input-Button" onClick={() => handleCustomKanjiEnter()}>Submit</button>
