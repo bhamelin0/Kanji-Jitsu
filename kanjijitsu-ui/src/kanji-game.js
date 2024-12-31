@@ -251,9 +251,9 @@ function KanjiGame() {
         </GameOverDialog>
         <div className="App-Body">
             <div className="App-Toolbar">
-                <div className="App-Toolbar-Breadcrumb">
-                    <Link hidden={gameStage < 1} onClick={() => resetForAll()}>Return to Level Select</Link>
-                    <Link  to={"/about"}>About</Link>
+                <div>
+                    <Link className="App-Toolbar-Breadcrumb" hidden={gameStage < 1} onClick={() => resetForAll()}>Return to Level Select</Link>
+                    <Link className="App-Toolbar-Breadcrumb" to={"/about"}>About</Link>
                 </div>
 
                 <div>
