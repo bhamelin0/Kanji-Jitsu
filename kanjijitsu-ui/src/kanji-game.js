@@ -9,9 +9,11 @@ import VocabTyper from './Components/vocab-typer';
 import Loader from './Components/loader';
 import VocabTile from './Components/vocab-tile';
 import KanjiScoreBoard from './Components/kanji-score-board';
+import Toggle from './Components/toggle';
 import GameOverDialog from './Components/game-over-dialog';
 import { useDraggable } from "react-use-draggable-scroll-safe";
 import * as wanakana from 'wanakana';
+import { useCookies } from 'react-cookie';
 
 function KanjiGame() {
     const [kanjiJson, setKanjiJson] = useState([]);
@@ -31,6 +33,9 @@ function KanjiGame() {
     const [matchedVocabRare, setMatchedVocabRare] = useState({});
 
     const [showGloss, setShowGloss] = useState(false);
+
+    const [cookies, setCookie] = useCookies(['show-kanji']);
+    
     const [showAll, setShowAll] = useState(false);
     const [boxCountStyle, setBoxCountStyle] = useState({ "--box-count": Math.max(Math.floor((window.innerWidth * .9) / 250) - 1, 1) });
 
@@ -227,6 +232,10 @@ function KanjiGame() {
         setStatusField("");
     }
 
+    function handleShowKanjiToggled(newShowKanji) {
+        setCookie('show-kanji', newShowKanji);
+    }
+
     return (
       <div className="App">
         <GameOverDialog 
@@ -242,12 +251,16 @@ function KanjiGame() {
         </GameOverDialog>
         <div className="App-Body">
             <div className="App-Toolbar">
-                <div>
-                    <Link className="App-Toolbar-Breadcrumb" hidden={gameStage < 1} onClick={() => resetForAll()}>Return to Level Select</Link>
-                    <Link className="App-Toolbar-Breadcrumb" to={"/about"}>About</Link>
+                <div className="App-Toolbar-Breadcrumb">
+                    <Link hidden={gameStage < 1} onClick={() => resetForAll()}>Return to Level Select</Link>
+                    <Link  to={"/about"}>About</Link>
                 </div>
+
                 <div>
-          
+                    <div className='App-Toolbar-Breadcrumb-Toggle'>
+                        Show Kanji
+                        <Toggle checked={cookies['show-kanji']} onClick={() => handleShowKanjiToggled(!cookies['show-kanji'])} />
+                    </div>
                 </div>
             </div>    
             <header className="App-header">
@@ -263,7 +276,7 @@ function KanjiGame() {
                         <div className = "Kanji-Selector-Subtitle">Which level of Kanji do you want to practice today?</div>
                         <div className="Kanji-Selector">
                         { kanjiJson.map((kanji) => 
-                            <KanjiTile key={kanji.Kanji_id} kanji={kanji} onClick={() => handleKanjiTileClick(kanji)} />
+                            <KanjiTile key={kanji.Kanji_id} kanji={kanji} showKanji={cookies['show-kanji']} onClick={() => handleKanjiTileClick(kanji)} />
                         )}
                         </div>
                         <div className = "Kanji-Selector-Subtitle">Set of kanji rotates every day at 12AM JST.</div>
