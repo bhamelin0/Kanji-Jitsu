@@ -257,10 +257,12 @@ function KanjiGame() {
                 </div>
 
                 <div>
+                    { (!selectedKanji || selectedKanjiVocabCommon.length === 0) && gameStage < 2 ?
                     <div className='App-Toolbar-Breadcrumb-Toggle'>
                         Show Kanji
                         <Toggle checked={cookies['show-kanji']} onClick={() => handleShowKanjiToggled(!cookies['show-kanji'])} />
                     </div>
+                    : null }
                 </div>
             </div>    
             <header className="App-header">
