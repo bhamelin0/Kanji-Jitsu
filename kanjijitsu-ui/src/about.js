@@ -20,16 +20,21 @@ function AboutPage() {
             I made this site as a platform to study Kanji and Japanese vocabulary.
             Kanji Jitsu is build with React, Golang, and PostgreSQL, and runs off of AWS Lambda.
             Kanji Jitsu went live on 2024-10-13, and I plan to develop many improvements as I use it as part of my Japanese study routine.
+            Thank you to the many people that have offered feedback to improve the site!
 
             In the near future, the following will be improved:`}
             <ul>
               <li>Better mobile experience</li>
               <li>Animations for a tile 'flipping' after being clicked / vocab entered</li>
-              <li>Add counters to the vocab tiles</li>
               <li>Link to a dictionary for each vocab item</li>
-              <li>Allow text entry on the page regardless of focus</li>
               <li>Japanese UI implementation</li>
-              <li>An integrated how to play tutorial</li>
+              <li>Adding an integrated how to play tutorial</li>
+            </ul>
+
+            <div>Recent changes: </div>
+            <ul>
+            <li>Added a toggle to show JLPT level or the daily kanji, depending on preference</li>
+            <li>Added cookie support to remember user preferences</li>
             </ul>
 
             <div>Thank you to the <a href="https://www.edrdg.org/wiki/index.php/JMdict-EDICT_Dictionary_Project">JMdict-EDICT Dictionary Project</a> for supplying the data for this app.</div>
